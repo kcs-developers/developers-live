@@ -9,18 +9,21 @@ import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @ToString
 @Getter
 @Where(clause = "deleted_at is NULL")
-@SQLDelete(sql = "update mentoring_room set deleted_at = CURRENT_TIMESTAMP where room_id = ?")
+@SQLDelete(sql = "update mentoring_room set deleted_at = CURRENT_TIMESTAMP where mentoring_room_id = ?")
 @Table(name = "mentoring_room")
 @Entity
 public class Room extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mentoringRoomId", nullable = false)
-    private Long roomId;
+    private Long mentoringRoomId;
     @Column(name = "mentorId", nullable = false)
     private Long mentorId;
     @Column(name = "title", nullable = false, length = 50)
@@ -29,6 +32,9 @@ public class Room extends BaseTime {
     private String description;
     @Column(name = "point", nullable = false)
     private Long point;
+
+    @OneToMany(mappedBy = "mentoringRoomId")
+    private List<Schedule> schedules = new ArrayList<>();
 
     @Builder
     public Room(Long mentorId, String title, String description, Long point) {

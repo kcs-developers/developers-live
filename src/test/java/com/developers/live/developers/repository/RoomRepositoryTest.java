@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -24,15 +25,28 @@ public class RoomRepositoryTest {
                 .description("contents is ...")
                 .point(10L)
                 .build();
-        roomRepository.save(room);
+        Room createdRoom = roomRepository.save(room);
 
         // when
-        List<Room> roomList = roomRepository.findAll();
+        Optional<Room> result = roomRepository.findById(createdRoom.getMentoringRoomId());
 
         // then
-        Room result = roomList.get(0);
-        assertThat(result.getRoomId()).isEqualTo(1L);
-        assertThat(result.getTitle()).isEqualTo("mentoring room");
-        assertThat(result.getDescription()).isEqualTo("contents is ...");
+        assertThat(result.isPresent()).isEqualTo(true);
+        assertThat(result.get().getMentorId()).isEqualTo(1L);
+        assertThat(result.get().getPoint()).isEqualTo(10L);
     }
+
+    @Test
+    public void get() {
+        // given
+        Long roomId = 1L;
+
+        // when
+        Optional<Room> foundRoom = roomRepository.findById(roomId);
+
+        // then
+        assertThat(foundRoom.isPresent()).isEqualTo(true);
+        assertThat(foundRoom.get().getMentoringRoomId()).isEqualTo(roomId);
+    }
+
 }

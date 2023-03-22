@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-public class RoomEnterResponseDto {
-    private String code;
-    private String msg;
-    private String data;
+public class RoomListResponseDto {
+  private Long mentoringRoomId;
+  private String mentorName;
+  private String title;
+  private String description;
+  private Long point;
 }
