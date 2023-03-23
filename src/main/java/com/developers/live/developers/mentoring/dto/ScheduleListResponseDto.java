@@ -11,8 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
-public class RoomListResponseDto {
+public class ScheduleListResponseDto {
   private String code;
   private String msg;
-  private List<RoomGetDto> data;
+  private List<ScheduleGetDto> data;
 }

@@ -5,14 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-public class RoomListResponseDto {
+public class ScheduleDeleteResponseDto {
   private String code;
   private String msg;
-  private List<RoomGetDto> data;
+  private String data;
 }

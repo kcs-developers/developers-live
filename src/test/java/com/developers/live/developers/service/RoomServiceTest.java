@@ -23,11 +23,11 @@ public class RoomServiceTest {
     // given
 
     // when
-    List<RoomListResponseDto> allRoom = roomService.getList();
+    RoomListResponseDto response = roomService.getList();
 
     // then
-    System.out.println("현재 만들어진 멘토링룸 갯수: " + allRoom.size());
-    System.out.println("전체 멘토링룸 조회: " + allRoom);
+    System.out.println("현재 만들어진 멘토링룸 갯수: " + response.getData().size());
+    System.out.println("전체 멘토링룸 조회: " + response);
   }
 
   @Test
@@ -53,10 +53,21 @@ public class RoomServiceTest {
     String param = "mentoring";
 
     // when
-    List<RoomListResponseDto> roomList = roomService.getListWithSearch(param);
+    RoomListResponseDto roomList = roomService.getListWithSearch(param);
 
     // then
-    System.out.println(param + " 으로 찾은 멘토링룸 개수: " + roomList.size());
+    System.out.println(param + " 으로 찾은 멘토링룸 개수: " + roomList.getData().size());
     System.out.println(param + " 으로 찾은 멘토링룸 조회: " + roomList);
+  }
+
+  @Test
+  void 최신순으로_멘토링룸_정렬() {
+    // given
+
+    // when
+    RoomListResponseDto roomList = roomService.getListWithRecent();
+
+    // then
+    System.out.println("최신순으로 정렬한 멘토링룸 목록: " + roomList.getData());
   }
 }
