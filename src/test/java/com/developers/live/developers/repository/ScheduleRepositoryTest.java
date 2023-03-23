@@ -45,10 +45,11 @@ public class ScheduleRepositoryTest {
   public void get() {
     // given
     Schedule schedule = Schedule.builder()
+            .mentoringRoomId(1L)
             .mentorId(1L)
             .menteeId(2L)
             .start(LocalDateTime.now())
-            .start(LocalDateTime.now().plusHours(1))
+            .end(LocalDateTime.now().plusHours(1))
             .build();
     Schedule createdSchedule = scheduleRespository.save(schedule);
 
