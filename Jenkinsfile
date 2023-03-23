@@ -13,6 +13,8 @@ pipeline {
     stage('Checkout Github') {
       steps {
           checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: applicationGitAddress ]]])
+          withCredentials([GitUsernamePassword(credentialsId: githubCredential, gitToolName: 'Default')]) {
+          sh 'git submodule update --init --recursive'
           }
       post {
         failure {
@@ -20,19 +22,6 @@ pipeline {
         }
         success {
           echo 'Application Repository clone success'
-        }
-      }
-    }
-    stage('Update Git Submodules') {
-      steps {
-        sh 'git submodule update --init --recursive'
-      }
-      post {
-        failure {
-          echo 'Submodules Update failure'
-        }
-        success {
-          echo 'Submodules Update success'
         }
       }
     }
