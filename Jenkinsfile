@@ -12,10 +12,11 @@ pipeline {
   stages {
     stage('Checkout Github') {
       steps {
-          checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: applicationGitAddress ]]])
-          withCredentials([GitUsernamePassword(credentialsId: githubCredential, gitToolName: 'Default')]) {
-            sh 'git submodule update --init --recursive'
-          }
+        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: applicationGitAddress ]]])
+        withCredentials([GitUsernamePassword(credentialsId: githubCredential, gitToolName: 'Default')]) {
+          sh 'git submodule update --init --recursive'
+        }
+      }
       post {
         failure {
           echo 'Application Repository clone failure'
@@ -27,8 +28,8 @@ pipeline {
     }
     stage('Gradle Build') {
       steps {
-          sh 'gradle clean build -Penv=prod'
-          }
+        sh 'gradle clean build -Penv=prod'
+      }
       post {
         failure {
           echo 'Gradle jar build failure'
