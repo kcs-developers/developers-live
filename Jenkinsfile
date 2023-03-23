@@ -14,7 +14,7 @@ pipeline {
       steps {
           checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: applicationGitAddress ]]])
           withCredentials([GitUsernamePassword(credentialsId: githubCredential, gitToolName: 'Default')]) {
-          sh 'git submodule update --init --recursive'
+            sh 'git submodule update --init --recursive'
           }
       post {
         failure {
