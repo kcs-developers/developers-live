@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -39,7 +38,15 @@ public class RoomRepositoryTest {
     @Test
     public void get() {
         // given
-        Long roomId = 1L;
+        Room room = Room.builder()
+                .mentorId(1L)
+                .title("mentoring room")
+                .description("contents is ...")
+                .point(10L)
+                .build();
+        Room createdRoom = roomRepository.save(room);
+
+        Long roomId = room.getMentoringRoomId();
 
         // when
         Optional<Room> foundRoom = roomRepository.findById(roomId);
@@ -48,5 +55,4 @@ public class RoomRepositoryTest {
         assertThat(foundRoom.isPresent()).isEqualTo(true);
         assertThat(foundRoom.get().getMentoringRoomId()).isEqualTo(roomId);
     }
-
 }

@@ -2,6 +2,7 @@ package com.developers.live.developers.mentoring.service;
 
 import com.developers.live.developers.mentoring.dto.RoomAddRequestDto;
 import com.developers.live.developers.mentoring.dto.RoomAddResponseDto;
+import com.developers.live.developers.mentoring.dto.RoomGetDto;
 import com.developers.live.developers.mentoring.dto.RoomListResponseDto;
 import com.developers.live.developers.mentoring.entity.Room;
 import com.developers.live.developers.mentoring.repository.RoomRepository;
@@ -19,9 +20,13 @@ public class RoomServiceImpl implements RoomService {
   private final RoomRepository roomRepository;
 
   @Override
-  public List<RoomListResponseDto> getList() {
-    List<Room> entityList = roomRepository.findAll();
-    return entityList.stream().map(room -> entityToDto(room)).collect(Collectors.toList());
+  public RoomListResponseDto getList() {
+    List<RoomGetDto> dtoList = roomRepository.findAll().stream().map(room -> entityToDto(room)).toList();
+    return RoomListResponseDto.builder()
+            .code(String.valueOf(HttpStatus.OK))
+            .msg("정상적으로 멘토링방 전체 조회가 되었습니다.")
+            .data(dtoList)
+            .build();
   }
 
   @Override
@@ -43,8 +48,22 @@ public class RoomServiceImpl implements RoomService {
   }
 
   @Override
-  public List<RoomListResponseDto> getListWithSearch(String param) {
-    List<Room> entityList = roomRepository.findByTitleContaining(param);
-    return entityList.stream().map(room -> entityToDto(room)).collect(Collectors.toList());
+  public RoomListResponseDto getListWithSearch(String param) {
+    List<RoomGetDto> dtoList = roomRepository.findByTitleContaining(param.replaceAll("\\s+", " ")).stream().map(room -> entityToDto(room)).toList();
+    return RoomListResponseDto.builder()
+            .code(String.valueOf(HttpStatus.OK))
+            .msg("정상적으로 멘토링방 문자열 검색이 되었습니다.")
+            .data(dtoList)
+            .build();
+  }
+
+  @Override
+  public RoomListResponseDto getListWithRecent() {
+    List<RoomGetDto> dtoList = roomRepository.findAllByOrderByUpdatedAtDesc().stream().map(room -> entityToDto(room)).toList();
+    return RoomListResponseDto.builder()
+            .code(String.valueOf(HttpStatus.OK))
+            .msg("정상적으로 최신순으로 정렬된 채팅방 목록이 조회되었습니다.")
+            .data(dtoList)
+            .build();
   }
 }
