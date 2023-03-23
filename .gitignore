@@ -214,6 +214,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,windows
 
 # Spring Profile ignore apply
-application-local.yml
-application-dev.yml
-application-prod.yml
+application-*.yml

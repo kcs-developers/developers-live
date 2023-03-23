@@ -48,35 +48,45 @@ tasks.named('test') {
 }
 
 
-ext { // (5)
+ext {
     snippetsDir = file('build/generated-snippets')
 //	outputDir = file('build/docs/asciidoc')
 }
 
-test { // (6)
+test {
     outputs.dir snippetsDir
 }
 
-asciidoctor { // (7)
-    inputs.dir snippetsDir // (8)
-    configurations 'asciidoctorExt' // (9)
-    dependsOn test // (10)
-    baseDirFollowsSourceDir() // (11)
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
+    baseDirFollowsSourceDir()
 }
 
-task copyDocument(type: Copy) { // (12)
+task copyDocument(type: Copy) {
     dependsOn asciidoctor
     from file("build/docs/asciidoc/")
     into file("src/main/resources/static/docs")
 }
 
-build { // (13)
+build {
     dependsOn copyDocument
 }
 
-bootJar { // (14)
+// 빌드 시 서브 모듈의 설정을 포함시키기
+task copyPrivate(type: Copy) {
+    copy {
+        from './developers-secret'
+        include "*.yml"
+        into 'src/main/resources'
+    }
+}
+
+bootJar {
     dependsOn copyDocument
     from ("${asciidoctor.outputDir}") {
         into 'src/main/resources/static/docs'
     }
+    copyPrivate
 }
