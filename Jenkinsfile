@@ -24,7 +24,17 @@ pipeline {
       }
     }
     stage('Update Git Submodules') {
-      sh "git submodule update --init --recursive"
+      steps {
+        sh 'git submodule update --init --recursive'
+      }
+      post {
+        failure {
+          echo 'Submodules Update failure'
+        }
+        success {
+          echo 'Submodules Update success'
+        }
+      }
     }
     stage('Gradle Build') {
       steps {
