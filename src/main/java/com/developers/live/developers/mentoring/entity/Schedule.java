@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -38,6 +39,10 @@ public class Schedule extends BaseTime {
   private LocalDateTime start;
   @Column(name = "end", nullable = false)
   private LocalDateTime end;
+
+  public void changeMentee(Long menteeId) {
+    this.menteeId = menteeId;
+  }
 
   @Builder
   public Schedule(Long mentoringRoomId, Long mentorId, Long menteeId, LocalDateTime start, LocalDateTime end) {
