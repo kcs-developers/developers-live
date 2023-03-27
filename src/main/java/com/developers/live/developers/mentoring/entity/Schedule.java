@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 @SQLDelete(sql = "update mentoring_room_schedule set deleted_at = CURRENT_TIMESTAMP where schedule_id = ?")
 @Table(name = "mentoring_room_schedule")
 @Entity
+@DynamicUpdate
 public class Schedule extends BaseTime {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
