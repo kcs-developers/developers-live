@@ -28,13 +28,13 @@ import java.time.LocalDateTime;
 public class Schedule extends BaseTime {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "scheduleId", nullable = false)
+  @Column(name = "schedule_id", nullable = false)
   private Long scheduleId;
-  @Column(name = "mentoringRoomId", nullable = false)
+  @Column(name = "mentoring_room_id", nullable = false)
   private Long mentoringRoomId;
-  @Column(name = "mentorId", nullable = false)
+  @Column(name = "mentor_id", nullable = false)
   private Long mentorId;
-  @Column(name = "menteeId")
+  @Column(name = "mentee_id")
   private Long menteeId;
   @Column(name = "start", nullable = false)
   private LocalDateTime start;

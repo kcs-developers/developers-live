@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -19,12 +20,13 @@ import java.util.List;
 @SQLDelete(sql = "update mentoring_room set deleted_at = CURRENT_TIMESTAMP where mentoring_room_id = ?")
 @Table(name = "mentoring_room")
 @Entity
+@DynamicUpdate
 public class Room extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mentoringRoomId", nullable = false)
+    @Column(name = "mentoring_room_id", nullable = false)
     private Long mentoringRoomId;
-    @Column(name = "mentorId", nullable = false)
+    @Column(name = "mentor_id", nullable = false)
     private Long mentorId;
     @Column(name = "title", nullable = false, length = 50)
     private String title;
@@ -35,6 +37,11 @@ public class Room extends BaseTime {
 
     @OneToMany(mappedBy = "mentoringRoomId")
     private List<Schedule> schedules = new ArrayList<>();
+
+    public void updateRoomInfo(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 
     @Builder
     public Room(Long mentorId, String title, String description, Long point) {
