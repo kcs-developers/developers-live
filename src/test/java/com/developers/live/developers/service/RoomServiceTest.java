@@ -1,8 +1,6 @@
 package com.developers.live.developers.service;
 
-import com.developers.live.developers.mentoring.dto.RoomAddRequestDto;
-import com.developers.live.developers.mentoring.dto.RoomAddResponseDto;
-import com.developers.live.developers.mentoring.dto.RoomListResponseDto;
+import com.developers.live.developers.mentoring.dto.*;
 import com.developers.live.developers.mentoring.service.RoomService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +67,21 @@ public class RoomServiceTest {
 
     // then
     System.out.println("최신순으로 정렬한 멘토링룸 목록: " + roomList.getData());
+  }
+
+  @Test
+  void 방_정보_수정() {
+    // given
+    RoomUpdateRequestDto request = RoomUpdateRequestDto.builder()
+            .mentoringRoomId(1L)
+            .title("수정된 방제")
+            .description("수정된 방 소개")
+            .build();
+
+    // when
+    RoomUpdateResponseDto response = roomService.updateRoom(request);
+
+    // then
+    assertThat(response.getCode()).isEqualTo(HttpStatus.OK.name());
   }
 }

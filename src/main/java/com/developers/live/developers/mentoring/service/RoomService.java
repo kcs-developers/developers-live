@@ -1,12 +1,7 @@
 package com.developers.live.developers.mentoring.service;
 
-import com.developers.live.developers.mentoring.dto.RoomAddRequestDto;
-import com.developers.live.developers.mentoring.dto.RoomAddResponseDto;
-import com.developers.live.developers.mentoring.dto.RoomGetDto;
-import com.developers.live.developers.mentoring.dto.RoomListResponseDto;
+import com.developers.live.developers.mentoring.dto.*;
 import com.developers.live.developers.mentoring.entity.Room;
-
-import java.util.List;
 
 public interface RoomService {
 
@@ -14,6 +9,7 @@ public interface RoomService {
   RoomAddResponseDto addRoom(RoomAddRequestDto req);
   RoomListResponseDto getListWithSearch(String param);
   RoomListResponseDto getListWithRecent();
+  RoomUpdateResponseDto updateRoom(RoomUpdateRequestDto req);
 
   default RoomGetDto entityToDto(Room entity) {
     return RoomGetDto.builder()
