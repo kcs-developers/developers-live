@@ -43,7 +43,7 @@ public class ScheduleServiceImpl implements ScheduleService {
       response = ScheduleAddResponseDto.builder()
               .code(String.valueOf(HttpStatus.NOT_FOUND))
               .msg("방에 대한 정보를 찾지 못했습니다.")
-              .data("null")
+              .data(null)
               .build();
     }
     return response;

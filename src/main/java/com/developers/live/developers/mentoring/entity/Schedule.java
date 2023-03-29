@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 @SQLDelete(sql = "update mentoring_room_schedule set deleted_at = CURRENT_TIMESTAMP where schedule_id = ?")
 @Table(name = "mentoring_room_schedule")
 @Entity
+@DynamicUpdate
 public class Schedule extends BaseTime {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +40,10 @@ public class Schedule extends BaseTime {
   private LocalDateTime start;
   @Column(name = "end", nullable = false)
   private LocalDateTime end;
+
+  public void changeMentee(Long menteeId) {
+    this.menteeId = menteeId;
+  }
 
   @Builder
   public Schedule(Long mentoringRoomId, Long mentorId, Long menteeId, LocalDateTime start, LocalDateTime end) {
