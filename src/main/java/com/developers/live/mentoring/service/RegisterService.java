@@ -1,7 +1,7 @@
-package com.developers.live.developers.mentoring.service;
+package com.developers.live.mentoring.service;
 
-import com.developers.live.developers.mentoring.dto.RegisterRequestDto;
-import com.developers.live.developers.mentoring.dto.RegisterResponseDto;
+import com.developers.live.mentoring.dto.RegisterRequestDto;
+import com.developers.live.mentoring.dto.RegisterResponseDto;
 
 public interface RegisterService {
 

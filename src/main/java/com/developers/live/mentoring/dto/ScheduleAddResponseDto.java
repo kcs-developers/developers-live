@@ -1,4 +1,4 @@
-package com.developers.live.developers.mentoring.dto;
+package com.developers.live.mentoring.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

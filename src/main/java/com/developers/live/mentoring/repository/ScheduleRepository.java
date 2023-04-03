@@ -1,6 +1,6 @@
-package com.developers.live.developers.mentoring.repository;
+package com.developers.live.mentoring.repository;
 
-import com.developers.live.developers.mentoring.entity.Schedule;
+import com.developers.live.mentoring.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

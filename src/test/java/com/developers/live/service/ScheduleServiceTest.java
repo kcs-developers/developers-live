@@ -1,15 +1,17 @@
-package com.developers.live.developers.service;
+package com.developers.live.service;
 
-import com.developers.live.developers.mentoring.dto.ScheduleAddRequestDto;
-import com.developers.live.developers.mentoring.dto.ScheduleAddResponseDto;
-import com.developers.live.developers.mentoring.dto.ScheduleListResponseDto;
-import com.developers.live.developers.mentoring.service.ScheduleService;
+import com.developers.live.mentoring.dto.ScheduleAddRequestDto;
+import com.developers.live.mentoring.dto.ScheduleAddResponseDto;
+import com.developers.live.mentoring.dto.ScheduleListResponseDto;
+import com.developers.live.mentoring.entity.Schedule;
+import com.developers.live.mentoring.service.ScheduleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

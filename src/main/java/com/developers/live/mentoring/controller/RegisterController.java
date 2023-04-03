@@ -1,8 +1,8 @@
-package com.developers.live.developers.mentoring.controller;
+package com.developers.live.mentoring.controller;
 
-import com.developers.live.developers.mentoring.dto.RegisterRequestDto;
-import com.developers.live.developers.mentoring.dto.RegisterResponseDto;
-import com.developers.live.developers.mentoring.service.RegisterService;
+import com.developers.live.mentoring.dto.RegisterRequestDto;
+import com.developers.live.mentoring.dto.RegisterResponseDto;
+import com.developers.live.mentoring.service.RegisterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

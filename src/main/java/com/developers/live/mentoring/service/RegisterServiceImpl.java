@@ -1,9 +1,9 @@
-package com.developers.live.developers.mentoring.service;
+package com.developers.live.mentoring.service;
 
-import com.developers.live.developers.mentoring.dto.RegisterRequestDto;
-import com.developers.live.developers.mentoring.dto.RegisterResponseDto;
-import com.developers.live.developers.mentoring.entity.Schedule;
-import com.developers.live.developers.mentoring.repository.ScheduleRepository;
+import com.developers.live.mentoring.dto.RegisterRequestDto;
+import com.developers.live.mentoring.dto.RegisterResponseDto;
+import com.developers.live.mentoring.entity.Schedule;
+import com.developers.live.mentoring.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -34,6 +34,7 @@ public class RegisterServiceImpl implements RegisterService {
         Long registeredMentee = Long.parseLong(String.valueOf(valueOperations.get(String.valueOf(request.getScheduleId()))));
 
         if (request.getMenteeId().equals(registeredMentee)) {
+          // TODO: 사용자 측에 포인트 차감 요청
           schedule.get().changeMentee(request.getMenteeId());
 
           return RegisterResponseDto.builder()

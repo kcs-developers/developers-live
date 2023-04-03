@@ -1,4 +1,4 @@
-package com.developers.live.developers.mentoring.dto;
+package com.developers.live.mentoring.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

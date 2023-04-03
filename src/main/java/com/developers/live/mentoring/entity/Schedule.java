@@ -1,6 +1,6 @@
-package com.developers.live.developers.mentoring.entity;
+package com.developers.live.mentoring.entity;
 
-import com.developers.live.developers.common.entity.BaseTime;
+import com.developers.live.common.entity.BaseTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

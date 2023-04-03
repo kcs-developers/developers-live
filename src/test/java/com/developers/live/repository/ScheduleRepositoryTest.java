@@ -1,7 +1,7 @@
-package com.developers.live.developers.repository;
+package com.developers.live.repository;
 
-import com.developers.live.developers.mentoring.entity.Schedule;
-import com.developers.live.developers.mentoring.repository.ScheduleRepository;
+import com.developers.live.mentoring.entity.Schedule;
+import com.developers.live.mentoring.repository.ScheduleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -60,5 +61,31 @@ public class ScheduleRepositoryTest {
     // then
     assertThat(foundSchedule.isPresent()).isEqualTo(true);
     assertThat(foundSchedule.get().getScheduleId()).isEqualTo(scheduleId);
+  }
+
+  @Test
+  public void bulkSave() {
+    // given
+    LongStream.rangeClosed(1, 20).forEach(i -> {
+      Schedule schedule = Schedule.builder()
+              .mentoringRoomId(i)
+              .mentorId(1L)
+              .start(LocalDateTime.now())
+              .end(LocalDateTime.now().plusHours(1))
+              .build();
+
+      scheduleRepository.save(schedule);
+    });
+
+    // when
+    List<Schedule> foundScheduleList = scheduleRepository.findAll();
+    for (Schedule schedule : foundScheduleList) {
+      System.out.println(schedule);
+    }
+
+    // then
+    for (Schedule schedule : foundScheduleList) {
+      assertThat(schedule.getScheduleId()).isNotNull();
+    }
   }
 }

@@ -1,10 +1,9 @@
-package com.developers.live.developers.mentoring.service;
+package com.developers.live.mentoring.service;
 
-import com.developers.live.developers.mentoring.dto.*;
-import com.developers.live.developers.mentoring.entity.Room;
-import com.developers.live.developers.mentoring.entity.Schedule;
-import com.developers.live.developers.mentoring.repository.RoomRepository;
-import com.developers.live.developers.mentoring.repository.ScheduleRepository;
+import com.developers.live.mentoring.entity.Room;
+import com.developers.live.mentoring.entity.Schedule;
+import com.developers.live.mentoring.repository.RoomRepository;
+import com.developers.live.mentoring.repository.ScheduleRepository;
 import com.developers.live.mentoring.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -53,6 +52,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     return response;
   }
 
+  // 멘토가 멘토링룸에 대한 일정을 취소할 때의 로직을 수행하는 메서드
+  // 해당 일정에 대해 멘티가 예정되어 있다면 삭제를 수행하지 않고 바로 에러를 반환하도록 한다.
   @Override
   public ScheduleDeleteResponseDto deleteScheduleAsMentor(Long scheduleId) {
     Optional<Schedule> optionalSchedule = scheduleRepository.findById(scheduleId);
@@ -86,6 +87,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
   }
 
+  // 멘티가 신청한 멘토링을 취소할 때의 로직을 수행하는 메서드
+  // 해당 일정에 대해 mentee 를 매칭해놓은 menteeId 속성 값을 null 로 바꿔준다.
   @Override
   @Transactional
   public ScheduleDeleteResponseDto deleteScheduleAsMentee(Long scheduleId) {
@@ -143,13 +146,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
   }
 
+  // 멘토링이 끝난 후, 멘토가 멘토링방 "종료" 버튼을 눌러 방에 대한 정보를 삭제하는 로직을 수행하는 메서드
+  // redis 에 저장된 scheduleId - menteeId 로 매핑된 정보를 지우고, RDB 에서도 해당 스케줄에 대한 정보 soft delete 방식으로 삭제 처리를 해준다.
   @Override
   public MentoringEndResponseDto endMentoring(Long scheduleId) {
     Optional<Schedule> optionalSchedule = scheduleRepository.findById(scheduleId);
 
     if (optionalSchedule.isPresent()) {
-      // redis 에서 해당 스케쥴 관련된 데이터 삭제
-      // RDB 에서 또한 스케쥴 soft delete 진행
       redisTemplate.delete(String.valueOf(scheduleId));
       scheduleRepository.deleteById(scheduleId);
 

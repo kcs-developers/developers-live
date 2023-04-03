@@ -1,7 +1,6 @@
-package com.developers.live.developers.mentoring.controller;
+package com.developers.live.mentoring.controller;
 
-import com.developers.live.developers.mentoring.dto.*;
-import com.developers.live.developers.mentoring.service.ScheduleService;
+import com.developers.live.mentoring.service.ScheduleService;
 import com.developers.live.mentoring.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ public class ScheduleController {
 
   private final ScheduleService scheduleService;
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<ScheduleAddResponseDto> scheduleAdd(@RequestBody @Valid ScheduleAddRequestDto request) {
     ScheduleAddResponseDto response = scheduleService.addSchedule(request);
     log.info("멘토링룸에 대한 일정 추가: " + response);

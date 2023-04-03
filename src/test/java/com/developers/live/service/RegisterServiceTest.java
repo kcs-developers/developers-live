@@ -1,15 +1,20 @@
-package com.developers.live.developers.service;
+package com.developers.live.service;
 
-import com.developers.live.developers.mentoring.dto.RegisterRequestDto;
-import com.developers.live.developers.mentoring.dto.RegisterResponseDto;
-import com.developers.live.developers.mentoring.service.RegisterService;
+import com.developers.live.mentoring.dto.RegisterRequestDto;
+import com.developers.live.mentoring.dto.RegisterResponseDto;
+import com.developers.live.mentoring.dto.ScheduleAddRequestDto;
+import com.developers.live.mentoring.entity.Schedule;
+import com.developers.live.mentoring.service.RegisterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -46,6 +51,7 @@ public class RegisterServiceTest {
 
     workers.forEach(Thread::start);
   }
+
   private class Register implements Runnable{
     private final Long userId;
     private final Long scheduleId;
