@@ -40,7 +40,7 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public RoomListResponseDto getFirstCacheList() {
     return RoomListResponseDto.builder()
-            .code(HttpStatus.OK.name())
+            .code(HttpStatus.OK.toString())
             .msg("첫번째 캐시 저장소에 저장된 데이터")
             .data(cachingRoomService.getAndUpdateFirstCacheStorage())
             .build();
@@ -49,7 +49,7 @@ public class RoomServiceImpl implements RoomService {
   @Override
   public RoomListResponseDto getSpareCacheList(LocalDateTime lastDateTime) {
     RoomListResponseDto response = RoomListResponseDto.builder()
-            .code(HttpStatus.OK.name())
+            .code(HttpStatus.OK.toString())
             .msg("예비 캐시 저장소에 저장된 데이터")
             .data(cachingRoomService.getAndUpdateSpareCacheStorage(lastDateTime))
             .build();
@@ -72,7 +72,7 @@ public class RoomServiceImpl implements RoomService {
     );
 
     return RoomAddResponseDto.builder()
-            .code(String.valueOf(HttpStatus.OK))
+            .code(HttpStatus.OK.toString())
             .msg("정상적으로 채팅방을 생성하였습니다.")
             .data(String.valueOf(result.getMentoringRoomId()))
             .build();
@@ -90,14 +90,14 @@ public class RoomServiceImpl implements RoomService {
       room.updateRoomInfo(req.getTitle().replaceAll("\\s+", " "), req.getDescription());
 
       response = RoomUpdateResponseDto.builder()
-              .code(HttpStatus.OK.name())
+              .code(HttpStatus.OK.toString())
               .msg("방 정보 수정이 완료되었습니다.")
               .data(String.valueOf(req.getMentoringRoomId()))
               .build();
     }
     else {
       response = RoomUpdateResponseDto.builder()
-              .code(HttpStatus.NOT_FOUND.name())
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("수정하려는 방의 정보를 찾을 수 없습니다.")
               .data(null)
               .build();
@@ -113,7 +113,7 @@ public class RoomServiceImpl implements RoomService {
     for (Schedule schedule : scheduleList) {
       if (schedule.getMenteeId() != null) {
         return RoomDeleteResponseDto.builder()
-                .code(HttpStatus.BAD_REQUEST.name())
+                .code(HttpStatus.BAD_REQUEST.toString())
                 .msg("아직 멘티가 잡혀있는 일정이 있기에 삭제가 불가능합니다.")
                 .data(null)
                 .build();
@@ -123,7 +123,7 @@ public class RoomServiceImpl implements RoomService {
     roomRepository.deleteById(mentoringRoomId);
 
     return RoomDeleteResponseDto.builder()
-            .code(HttpStatus.OK.name())
+            .code(HttpStatus.OK.toString())
             .msg("정상적으로 멘토링룸 삭제가 완료되었습니다.")
             .data(String.valueOf(mentoringRoomId))
             .build();
@@ -136,7 +136,7 @@ public class RoomServiceImpl implements RoomService {
     List<RoomGetDto> dtoList = roomList.stream().map(room -> entityToDto(room)).toList();
 
     return RoomListResponseDto.builder()
-            .code(HttpStatus.OK.name())
+            .code(HttpStatus.OK.toString())
             .msg("검색어로 멘토링룸 목록 조회가 완료되었습니다.")
             .data(dtoList)
             .build();

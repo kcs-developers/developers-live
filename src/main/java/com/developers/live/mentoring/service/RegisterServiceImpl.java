@@ -38,20 +38,20 @@ public class RegisterServiceImpl implements RegisterService {
           schedule.get().changeMentee(request.getMenteeId());
 
           return RegisterResponseDto.builder()
-                  .code(String.valueOf(HttpStatus.OK))
+                  .code(HttpStatus.OK.toString())
                   .msg("정상적으로 신청이 완료되었습니다.")
                   .data(String.valueOf(request.getMenteeId()))
                   .build();
         }
       }
       return RegisterResponseDto.builder()
-              .code(String.valueOf(HttpStatus.NOT_FOUND))
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("이미 예약된 멘토링 일정입니다.")
               .data(null)
               .build();
     }
     return RegisterResponseDto.builder()
-            .code(HttpStatus.NOT_FOUND.name())
+            .code(HttpStatus.NOT_FOUND.toString())
             .msg("해당 스케줄에 대한 정보를 찾지 못했습니다.")
             .data(null)
             .build();
