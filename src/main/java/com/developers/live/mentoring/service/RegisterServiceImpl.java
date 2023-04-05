@@ -7,7 +7,7 @@ import com.developers.live.mentoring.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +34,6 @@ public class RegisterServiceImpl implements RegisterService {
         Long registeredMentee = Long.parseLong(String.valueOf(valueOperations.get(String.valueOf(request.getScheduleId()))));
 
         if (request.getMenteeId().equals(registeredMentee)) {
-          // TODO: 사용자 측에 포인트 차감 요청
           schedule.get().changeMentee(request.getMenteeId());
 
           return RegisterResponseDto.builder()

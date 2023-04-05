@@ -38,8 +38,8 @@ public class RoomController {
 
     @GetMapping("/next")
     public ResponseEntity<RoomListResponseDto> getSpareList(@RequestParam("lastDateTime") LocalDateTime lastDateTime) {
-        RoomListResponseDto response = roomService.getSpareCacheList(lastDateTime);
-        log.info("예비 저장소에 저장된 데이터");
+        RoomListResponseDto response = roomService.getNextList(lastDateTime);
+        log.info("다음 데이터: " + response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

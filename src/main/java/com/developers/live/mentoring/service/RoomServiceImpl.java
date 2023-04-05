@@ -7,6 +7,8 @@ import com.developers.live.mentoring.repository.ScheduleRepository;
 import com.developers.live.mentoring.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,18 +27,14 @@ public class RoomServiceImpl implements RoomService {
   private final ScheduleRepository scheduleRepository;
   private final CachingRoomService cachingRoomService;
 
-  // 첫 목록 조회 요청(페이지 방문), 새로고침 등의 상황에서 첫번째, 예비 저장소 모두 새로 받아오도록 한다.
+  // 밑에서 지정해줬듯이 120000ms(2분)마다 한번씩 scheduler 가 실행되어 첫번째 100개의 데이터를 DB와 맞춘다.
   @Override
-  // TODO: fixedDelay 설정 변경 필요
-  @Scheduled(fixedDelay = 30000)
-  public void initCacheStorage() {
+  @Scheduled(fixedDelay = 120000)
+  public void syncWithData() {
     cachingRoomService.removeFirstMentoringRoomList();
     cachingRoomService.getAndUpdateFirstCacheStorage();
-    cachingRoomService.initSpareCacheStorage();
   }
 
-  // 밑에서 지정해줬듯이 180000ms 즉, 3분마다 한번씩 scheduler 가 실행되어 첫번째 데이터만 업데이트 한다.
-  // 즉, 3분마다 새로운 방 정보를 받아오고
   @Override
   public RoomListResponseDto getFirstCacheList() {
     return RoomListResponseDto.builder()
@@ -47,17 +45,15 @@ public class RoomServiceImpl implements RoomService {
   }
 
   @Override
-  public RoomListResponseDto getSpareCacheList(LocalDateTime lastDateTime) {
-    RoomListResponseDto response = RoomListResponseDto.builder()
+  public RoomListResponseDto getNextList(LocalDateTime lastDateTime) {
+    List<Room> roomList = roomRepository.findAllByCreatedAtBeforeOrderByCreatedAtDesc(lastDateTime, PageRequest.of(0, 100));
+    List<RoomGetDto> result = roomList.stream().map(room -> entityToDto(room)).toList();
+
+    return RoomListResponseDto.builder()
             .code(HttpStatus.OK.toString())
-            .msg("예비 캐시 저장소에 저장된 데이터")
-            .data(cachingRoomService.getAndUpdateSpareCacheStorage(lastDateTime))
+            .msg("다음 데이터 불러오기")
+            .data(result)
             .build();
-
-    cachingRoomService.removeSpareMentoringRoomList();
-    cachingRoomService.getAndUpdateSpareCacheStorage(lastDateTime);
-
-    return response;
   }
 
   @Override
@@ -121,6 +117,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     roomRepository.deleteById(mentoringRoomId);
+    // 방 삭제 시 관련 스케쥴도 삭제 처리
+    scheduleRepository.deleteAll(scheduleList);
 
     return RoomDeleteResponseDto.builder()
             .code(HttpStatus.OK.toString())
