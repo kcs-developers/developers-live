@@ -21,9 +21,4 @@ public class RoomAddRequestDto {
     @NotBlank
     @Size(max = 500)
     private String description;
-
-    @NotNull
-    @Min(30)
-    @Max(50)
-    private Long point;
 }

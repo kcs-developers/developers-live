@@ -63,7 +63,6 @@ public class RoomServiceImpl implements RoomService {
             .mentorId(req.getMentorId())
             .title(req.getTitle())
             .description(req.getDescription())
-            .point(req.getPoint())
             .build()
     );
 
