@@ -37,14 +37,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                       .build());
 
       response = ScheduleAddResponseDto.builder()
-              .code(String.valueOf(HttpStatus.OK))
+              .code(HttpStatus.OK.toString())
               .msg("일정이 추가되었습니다.")
               .data(String.valueOf(schedule.getScheduleId()))
               .build();
     }
     else {
       response = ScheduleAddResponseDto.builder()
-              .code(String.valueOf(HttpStatus.NOT_FOUND))
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("해당 스케줄에 대한 정보를 찾지 못했습니다.")
               .data(null)
               .build();
@@ -65,14 +65,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.deleteById(scheduleId);
 
         return ScheduleDeleteResponseDto.builder()
-                .code(HttpStatus.OK.name())
+                .code(HttpStatus.OK.toString())
                 .msg("정상적으로 멘토링 일정이 취소되었습니다.")
                 .data(String.valueOf(scheduleId))
                 .build();
       }
       else {
         return ScheduleDeleteResponseDto.builder()
-                .code(HttpStatus.BAD_REQUEST.name())
+                .code(HttpStatus.BAD_REQUEST.toString())
                 .msg("이미 일정에 신청한 사용자가 있어 일정 취소가 불가능합니다.")
                 .data(null)
                 .build();
@@ -80,7 +80,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
     else {
       return ScheduleDeleteResponseDto.builder()
-              .code(HttpStatus.NOT_FOUND.name())
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("스케쥴에 대한 정보를 찾을 수 없습니다.")
               .data(null)
               .build();
@@ -98,14 +98,14 @@ public class ScheduleServiceImpl implements ScheduleService {
       optionalSchedule.get().changeMentee(null);
 
       return ScheduleDeleteResponseDto.builder()
-              .code(HttpStatus.OK.name())
+              .code(HttpStatus.OK.toString())
               .msg("정상적으로 신청이 취소되었습니다.")
               .data(String.valueOf(scheduleId))
               .build();
     }
     else {
       return ScheduleDeleteResponseDto.builder()
-              .code(HttpStatus.NOT_FOUND.name())
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("해당 스케쥴에 대한 정보가 없습니다.")
               .data(null)
               .build();
@@ -117,7 +117,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     List<ScheduleGetDto> dtoList = scheduleRepository.findAllByMentorId(memberId).stream().map(schedule -> entityToDto(schedule)).toList();
 
     return ScheduleListResponseDto.builder()
-            .code(String.valueOf(HttpStatus.OK))
+            .code(HttpStatus.OK.toString())
             .msg("멘토로서의 일정 조회가 완료되었습니다.")
             .data(dtoList)
             .build();
@@ -128,7 +128,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     List<ScheduleGetDto> dtoList = scheduleRepository.findAllByMenteeId(memberId).stream().map(schedule -> entityToDto(schedule)).toList();
 
     return ScheduleListResponseDto.builder()
-            .code(String.valueOf(HttpStatus.OK))
+            .code(HttpStatus.OK.toString())
             .msg("멘티로서의 일정 조회가 완료되었습니다.")
             .data(dtoList)
             .build();

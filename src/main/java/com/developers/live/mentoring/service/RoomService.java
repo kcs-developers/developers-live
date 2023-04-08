@@ -15,10 +15,9 @@ import java.util.Map;
 
 public interface RoomService {
 
-  // 첫번째, 예비 저장소 모두 업데이트 하는 메서드
-  void initCacheStorage();
+  void syncWithData();
   RoomListResponseDto getFirstCacheList();
-  RoomListResponseDto getSpareCacheList(LocalDateTime lastDateTime);
+  RoomListResponseDto getNextList(LocalDateTime lastDateTime);
   RoomAddResponseDto addRoom(RoomAddRequestDto req);
   RoomUpdateResponseDto updateRoom(RoomUpdateRequestDto req);
   RoomDeleteResponseDto deleteRoom(Long mentoringRoomId);

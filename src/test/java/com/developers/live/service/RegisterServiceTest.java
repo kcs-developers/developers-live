@@ -10,11 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -35,7 +32,7 @@ public class RegisterServiceTest {
     RegisterResponseDto response = registerService.register(request);
 
     // then
-    assertThat(response.getCode()).isEqualTo(String.valueOf(HttpStatus.OK));
+    assertThat(response.getCode()).isEqualTo(HttpStatus.OK.toString());
     assertThat(response.getData()).isEqualTo(String.valueOf(request.getMenteeId()));
   }
 

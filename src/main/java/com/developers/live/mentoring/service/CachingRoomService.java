@@ -10,17 +10,13 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface CachingRoomService {
 
   void removeFirstMentoringRoomList();
-  void removeSpareMentoringRoomList();
   List<RoomGetDto> getAndUpdateFirstCacheStorage();
-  List<RoomGetDto> initSpareCacheStorage();
-  List<RoomGetDto> getAndUpdateSpareCacheStorage(LocalDateTime lastDateTime);
 
   default String getMentorName(Long mentorId) {
     RestTemplate restTemplate = new RestTemplate();

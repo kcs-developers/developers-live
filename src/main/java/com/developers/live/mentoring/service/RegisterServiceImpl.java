@@ -7,7 +7,7 @@ import com.developers.live.mentoring.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,24 +34,23 @@ public class RegisterServiceImpl implements RegisterService {
         Long registeredMentee = Long.parseLong(String.valueOf(valueOperations.get(String.valueOf(request.getScheduleId()))));
 
         if (request.getMenteeId().equals(registeredMentee)) {
-          // TODO: 사용자 측에 포인트 차감 요청
           schedule.get().changeMentee(request.getMenteeId());
 
           return RegisterResponseDto.builder()
-                  .code(String.valueOf(HttpStatus.OK))
+                  .code(HttpStatus.OK.toString())
                   .msg("정상적으로 신청이 완료되었습니다.")
                   .data(String.valueOf(request.getMenteeId()))
                   .build();
         }
       }
       return RegisterResponseDto.builder()
-              .code(String.valueOf(HttpStatus.NOT_FOUND))
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("이미 예약된 멘토링 일정입니다.")
               .data(null)
               .build();
     }
     return RegisterResponseDto.builder()
-            .code(HttpStatus.NOT_FOUND.name())
+            .code(HttpStatus.NOT_FOUND.toString())
             .msg("해당 스케줄에 대한 정보를 찾지 못했습니다.")
             .data(null)
             .build();

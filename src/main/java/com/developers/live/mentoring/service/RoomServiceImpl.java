@@ -7,6 +7,8 @@ import com.developers.live.mentoring.repository.ScheduleRepository;
 import com.developers.live.mentoring.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,39 +27,33 @@ public class RoomServiceImpl implements RoomService {
   private final ScheduleRepository scheduleRepository;
   private final CachingRoomService cachingRoomService;
 
-  // 첫 목록 조회 요청(페이지 방문), 새로고침 등의 상황에서 첫번째, 예비 저장소 모두 새로 받아오도록 한다.
+  // 밑에서 지정해줬듯이 120000ms(2분)마다 한번씩 scheduler 가 실행되어 첫번째 100개의 데이터를 DB와 맞춘다.
   @Override
-  // TODO: fixedDelay 설정 변경 필요
-  @Scheduled(fixedDelay = 30000)
-  public void initCacheStorage() {
+  @Scheduled(fixedDelay = 120000)
+  public void syncWithData() {
     cachingRoomService.removeFirstMentoringRoomList();
     cachingRoomService.getAndUpdateFirstCacheStorage();
-    cachingRoomService.initSpareCacheStorage();
   }
 
-  // 밑에서 지정해줬듯이 180000ms 즉, 3분마다 한번씩 scheduler 가 실행되어 첫번째 데이터만 업데이트 한다.
-  // 즉, 3분마다 새로운 방 정보를 받아오고
   @Override
   public RoomListResponseDto getFirstCacheList() {
     return RoomListResponseDto.builder()
-            .code(HttpStatus.OK.name())
+            .code(HttpStatus.OK.toString())
             .msg("첫번째 캐시 저장소에 저장된 데이터")
             .data(cachingRoomService.getAndUpdateFirstCacheStorage())
             .build();
   }
 
   @Override
-  public RoomListResponseDto getSpareCacheList(LocalDateTime lastDateTime) {
-    RoomListResponseDto response = RoomListResponseDto.builder()
-            .code(HttpStatus.OK.name())
-            .msg("예비 캐시 저장소에 저장된 데이터")
-            .data(cachingRoomService.getAndUpdateSpareCacheStorage(lastDateTime))
+  public RoomListResponseDto getNextList(LocalDateTime lastDateTime) {
+    List<Room> roomList = roomRepository.findAllByCreatedAtBeforeOrderByCreatedAtDesc(lastDateTime, PageRequest.of(0, 100));
+    List<RoomGetDto> result = roomList.stream().map(room -> entityToDto(room)).toList();
+
+    return RoomListResponseDto.builder()
+            .code(HttpStatus.OK.toString())
+            .msg("다음 데이터 불러오기")
+            .data(result)
             .build();
-
-    cachingRoomService.removeSpareMentoringRoomList();
-    cachingRoomService.getAndUpdateSpareCacheStorage(lastDateTime);
-
-    return response;
   }
 
   @Override
@@ -72,7 +68,7 @@ public class RoomServiceImpl implements RoomService {
     );
 
     return RoomAddResponseDto.builder()
-            .code(String.valueOf(HttpStatus.OK))
+            .code(HttpStatus.OK.toString())
             .msg("정상적으로 채팅방을 생성하였습니다.")
             .data(String.valueOf(result.getMentoringRoomId()))
             .build();
@@ -90,14 +86,14 @@ public class RoomServiceImpl implements RoomService {
       room.updateRoomInfo(req.getTitle().replaceAll("\\s+", " "), req.getDescription());
 
       response = RoomUpdateResponseDto.builder()
-              .code(HttpStatus.OK.name())
+              .code(HttpStatus.OK.toString())
               .msg("방 정보 수정이 완료되었습니다.")
               .data(String.valueOf(req.getMentoringRoomId()))
               .build();
     }
     else {
       response = RoomUpdateResponseDto.builder()
-              .code(HttpStatus.NOT_FOUND.name())
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("수정하려는 방의 정보를 찾을 수 없습니다.")
               .data(null)
               .build();
@@ -113,7 +109,7 @@ public class RoomServiceImpl implements RoomService {
     for (Schedule schedule : scheduleList) {
       if (schedule.getMenteeId() != null) {
         return RoomDeleteResponseDto.builder()
-                .code(HttpStatus.BAD_REQUEST.name())
+                .code(HttpStatus.BAD_REQUEST.toString())
                 .msg("아직 멘티가 잡혀있는 일정이 있기에 삭제가 불가능합니다.")
                 .data(null)
                 .build();
@@ -121,9 +117,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     roomRepository.deleteById(mentoringRoomId);
+    // 방 삭제 시 관련 스케쥴도 삭제 처리
+    scheduleRepository.deleteAll(scheduleList);
 
     return RoomDeleteResponseDto.builder()
-            .code(HttpStatus.OK.name())
+            .code(HttpStatus.OK.toString())
             .msg("정상적으로 멘토링룸 삭제가 완료되었습니다.")
             .data(String.valueOf(mentoringRoomId))
             .build();
@@ -136,7 +134,7 @@ public class RoomServiceImpl implements RoomService {
     List<RoomGetDto> dtoList = roomList.stream().map(room -> entityToDto(room)).toList();
 
     return RoomListResponseDto.builder()
-            .code(HttpStatus.OK.name())
+            .code(HttpStatus.OK.toString())
             .msg("검색어로 멘토링룸 목록 조회가 완료되었습니다.")
             .data(dtoList)
             .build();
