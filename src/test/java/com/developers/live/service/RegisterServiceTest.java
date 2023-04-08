@@ -2,37 +2,69 @@ package com.developers.live.service;
 
 import com.developers.live.mentoring.dto.RegisterRequestDto;
 import com.developers.live.mentoring.dto.RegisterResponseDto;
-import com.developers.live.mentoring.dto.ScheduleAddRequestDto;
 import com.developers.live.mentoring.entity.Schedule;
-import com.developers.live.mentoring.service.RegisterService;
+import com.developers.live.mentoring.repository.ScheduleRepository;
+import com.developers.live.mentoring.service.RegisterServiceImpl;
+import com.developers.live.mentoring.service.ScheduleServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class RegisterServiceTest {
 
-  @Autowired RegisterService registerService;
+  @Mock
+  private RedisTemplate<String, Object> redisTemplate;
+
+  @Mock ScheduleRepository scheduleRepository;
+
+  @Mock ScheduleServiceImpl scheduleService;
+
+  @InjectMocks
+  RegisterServiceImpl registerService;
 
   @Test
   public void 멘토링_신청() {
     // given
+    ValueOperations<String, Object> valueOperations = mock(ValueOperations.class);
+    Long scheduleId = 1L;
+    Long menteeId = 2L;
     RegisterRequestDto request = RegisterRequestDto.builder()
-            .scheduleId(3L)
-            .menteeId(2L)
+            .scheduleId(scheduleId)
+            .menteeId(menteeId)
             .build();
+    Schedule schedule = Schedule.builder()
+            .mentoringRoomId(1L)
+            .mentorId(1L)
+            .start(LocalDateTime.now())
+            .start(LocalDateTime.now().plusHours(1))
+            .build();
+    when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+    when(redisTemplate.opsForValue().get(String.valueOf(scheduleId))).thenReturn(String.valueOf(menteeId));
+    when(scheduleRepository.findById(any())).thenReturn(Optional.of(schedule));
 
     // when
     RegisterResponseDto response = registerService.register(request);
 
     // then
     assertThat(response.getCode()).isEqualTo(HttpStatus.OK.toString());
+    assertThat(response.getMsg()).isEqualTo("정상적으로 신청이 완료되었습니다.");
+    assertThat(response.getData()).isInstanceOf(String.class);
     assertThat(response.getData()).isEqualTo(String.valueOf(request.getMenteeId()));
   }
 

@@ -53,7 +53,7 @@ tasks.named('test') {
 
 ext {
     snippetsDir = file('build/generated-snippets')
-//	outputDir = file('build/docs/asciidoc')
+	outputDir = file('build/docs/asciidoc')
 }
 
 test {

@@ -9,9 +9,90 @@
 
 == Room API
 
-=== 멘토링룸 개설(Room Save)
+=== 멘토링룸 전체 조회 - 가장 첫 데이터 가져오기
 Request
-// include::{snippets}/problem/save/http-request.adoc[]
+include::{snippets}/room/list/http-request.adoc[]
 
 Response
-// include::{snippets}/problem/save/http-response.adoc[]
+include::{snippets}/room/list/http-response.adoc[]
+
+=== 멘토링룸 전체 조회 - 다음 데이터 이어서 가져오기
+Request
+include::{snippets}/room/list-next/http-request.adoc[]
+
+Response
+include::{snippets}/room/list-next/http-response.adoc[]
+
+=== 멘토링룸 생성
+Request
+include::{snippets}/room/add/http-request.adoc[]
+
+Response
+include::{snippets}/room/add/http-response.adoc[]
+
+=== 멘토링룸 삭제
+Request
+include::{snippets}/room/delete/http-request.adoc[]
+
+Response
+include::{snippets}/room/delete/http-response.adoc[]
+
+=== 멘토링룸 정보 수정
+Request
+include::{snippets}/room/update/http-request.adoc[]
+
+Response
+include::{snippets}/room/update/http-response.adoc[]
+
+== Register API
+
+=== 멘토링 신청
+Request
+include::{snippets}/register/req/http-request.adoc[]
+
+Response
+include::{snippets}/register/req/http-response.adoc[]
+
+== Schedule API
+
+=== 멘토링룸에 대한 일정 추가
+Request
+include::{snippets}/schedule/add/http-request.adoc[]
+
+Response
+include::{snippets}/schedule/add/http-response.adoc[]
+
+=== 멘토링룸에 대한 일정을 멘토로서 삭제
+Request
+include::{snippets}/schedule/delete-mentor/http-request.adoc[]
+
+Response
+include::{snippets}/schedule/delete-mentor/http-response.adoc[]
+
+=== 멘토링룸에 대한 일정을 멘티로서 취소
+Request
+include::{snippets}/schedule/delete-mentee/http-request.adoc[]
+
+Response
+include::{snippets}/schedule/delete-mentee/http-response.adoc[]
+
+=== 멘토로서의 일정 목록 조회
+Request
+include::{snippets}/schedule/get-mentor/http-request.adoc[]
+
+Response
+include::{snippets}/schedule/get-mentor/http-response.adoc[]
+
+=== 멘티로서의 일정 목록 조회
+Request
+include::{snippets}/schedule/get-mentee/http-request.adoc[]
+
+Response
+include::{snippets}/schedule/get-mentee/http-response.adoc[]
+
+=== 멘토링룸 종료 후 데이터 정리
+Request
+include::{snippets}/schedule/end-mentoring/http-request.adoc[]
+
+Response
+include::{snippets}/schedule/end-mentoring/http-response.adoc[]

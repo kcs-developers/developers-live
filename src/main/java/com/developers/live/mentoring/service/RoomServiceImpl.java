@@ -1,14 +1,13 @@
 package com.developers.live.mentoring.service;
 
+import com.developers.live.mentoring.dto.*;
 import com.developers.live.mentoring.entity.Room;
 import com.developers.live.mentoring.entity.Schedule;
 import com.developers.live.mentoring.repository.RoomRepository;
 import com.developers.live.mentoring.repository.ScheduleRepository;
-import com.developers.live.mentoring.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
