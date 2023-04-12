@@ -1,5 +1,6 @@
 package com.developers.live.mentoring.dto;
 
+import com.developers.live.mentoring.entity.Room;
 import jakarta.validation.constraints.*;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -22,8 +23,11 @@ public class RoomAddRequestDto {
     @Size(max = 500)
     private String description;
 
-    @NotNull
-    @Min(30)
-    @Max(50)
-    private Long point;
+    public Room toEntity() {
+        return Room.builder()
+                .mentorId(mentorId)
+                .title(title)
+                .description(description)
+                .build();
+    }
 }

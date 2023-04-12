@@ -157,14 +157,14 @@ public class ScheduleServiceImpl implements ScheduleService {
       scheduleRepository.deleteById(scheduleId);
 
       return MentoringEndResponseDto.builder()
-              .code(HttpStatus.OK.name())
+              .code(HttpStatus.OK.toString())
               .msg("성공적으로 멘토링 정보가 정리되었습니다.")
               .data(String.valueOf(scheduleId))
               .build();
     }
     else {
       return MentoringEndResponseDto.builder()
-              .code(HttpStatus.NOT_FOUND.name())
+              .code(HttpStatus.NOT_FOUND.toString())
               .msg("해당 스케쥴에 대한 정보가 없습니다.")
               .data(null)
               .build();

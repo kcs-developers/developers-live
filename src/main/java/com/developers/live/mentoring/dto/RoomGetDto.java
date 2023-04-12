@@ -16,9 +16,5 @@ public class RoomGetDto {
   private String mentorName;
   private String title;
   private String description;
-  private Long point;
-
-  // for test
-  // TODO: pull 할때는 삭제 필수
   private LocalDateTime createdAt;
 }

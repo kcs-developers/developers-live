@@ -49,7 +49,6 @@ public interface CachingRoomService {
             .mentorName(getMentorName(entity.getMentorId()))
             .title(entity.getTitle())
             .description(entity.getDescription())
-            .point(entity.getPoint())
             .createdAt(entity.getCreatedAt())
             .build();
   }

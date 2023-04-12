@@ -32,8 +32,6 @@ public class Room extends BaseTime {
     private String title;
     @Column(name = "description", length = 500)
     private String description;
-    @Column(name = "point", nullable = false)
-    private Long point;
 
     @OneToMany(mappedBy = "mentoringRoomId")
     private List<Schedule> schedules = new ArrayList<>();
@@ -44,10 +42,9 @@ public class Room extends BaseTime {
     }
 
     @Builder
-    public Room(Long mentorId, String title, String description, Long point) {
+    public Room(Long mentorId, String title, String description) {
         this.mentorId = mentorId;
         this.title = title;
         this.description = description;
-        this.point = point;
     }
 }

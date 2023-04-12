@@ -33,7 +33,7 @@ public class ScheduleRepositoryTest {
     scheduleRepository.save(room);
 
     // when
-    List<Schedule> scheduleList = scheduleRepository.findAll();
+    scheduleRepository.findAll();
 
     // then
     Optional<Schedule> result = scheduleRepository.findById(room.getScheduleId());
@@ -42,7 +42,7 @@ public class ScheduleRepositoryTest {
   }
 
   @Test
-  public void get() {
+  void get() {
     // given
     Schedule schedule = Schedule.builder()
             .mentoringRoomId(1L)
@@ -51,7 +51,7 @@ public class ScheduleRepositoryTest {
             .start(LocalDateTime.now())
             .end(LocalDateTime.now().plusHours(1))
             .build();
-    Schedule createdSchedule = scheduleRepository.save(schedule);
+    scheduleRepository.save(schedule);
 
     Long scheduleId = schedule.getScheduleId();
 
@@ -64,7 +64,7 @@ public class ScheduleRepositoryTest {
   }
 
   @Test
-  public void bulkSave() {
+  void bulkSave() {
     // given
     LongStream.rangeClosed(1, 20).forEach(i -> {
       Schedule schedule = Schedule.builder()
