@@ -42,7 +42,7 @@ public class RoomControllerTest {
 
   @MockBean RoomServiceImpl roomService;
 
-  private static final String BASE_URL = "/room";
+  private static final String BASE_URL = "/api/room";
 
   @Test
   void getFirstList() throws Exception {

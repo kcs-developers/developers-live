@@ -38,7 +38,7 @@ public class RegisterControllerTest {
 
   @MockBean RegisterServiceImpl registerService;
 
-  private static final String BASE_URL = "/register";
+  private static final String BASE_URL = "/api/register";
 
   @Test
   void register() throws Exception {

@@ -454,7 +454,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /room HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/room HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -475,13 +475,13 @@ Content-Length: 483
     "mentorName" : "김멘토",
     "title" : "첫번째 방",
     "description" : "첫번째 방입니다.",
-    "createdAt" : "2023-04-08T11:52:05.782658"
+    "createdAt" : "2023-04-12T13:31:13.724058"
   }, {
     "mentoringRoomId" : 2,
     "mentorName" : "이멘토",
     "title" : "두번째 방",
     "description" : "두번째 방입니다.",
-    "createdAt" : "2023-04-08T11:52:05.782669"
+    "createdAt" : "2023-04-12T13:31:13.724074"
   } ]
 }</code></pre>
 </div>
@@ -494,7 +494,7 @@ Content-Length: 483
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /room/next?lastDateTime=2023-04-08T10:52:05.756814 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/room/next?lastDateTime=2023-04-12T12:31:13.692416 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -515,13 +515,13 @@ Content-Length: 463
     "mentorName" : "김멘토",
     "title" : "첫번째 방",
     "description" : "첫번째 방입니다.",
-    "createdAt" : "2023-04-08T09:52:05.756847"
+    "createdAt" : "2023-04-12T11:31:13.692457"
   }, {
     "mentoringRoomId" : 2,
     "mentorName" : "이멘토",
     "title" : "두번째 방",
     "description" : "두번째 방입니다.",
-    "createdAt" : "2023-04-08T08:52:05.756854"
+    "createdAt" : "2023-04-12T10:31:13.692464"
   } ]
 }</code></pre>
 </div>
@@ -534,7 +534,7 @@ Content-Length: 463
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /room HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/room HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 81
 Host: localhost:8080
@@ -570,7 +570,7 @@ Content-Length: 104
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /room/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/room/1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -598,7 +598,7 @@ Content-Length: 114
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /room/update HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/room/update HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 97
 Host: localhost:8080
@@ -639,7 +639,7 @@ Content-Length: 96
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /register HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/register HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 40
 Host: localhost:8080
@@ -679,16 +679,16 @@ Content-Length: 101
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /schedules HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/schedules HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 127
+Content-Length: 126
 Host: localhost:8080
 
 {
   "mentoringRoomId" : 1,
   "mentorId" : 1,
-  "start" : "2023-04-08T11:52:05.914593",
-  "end" : "2023-04-08T12:52:05.914604"
+  "start" : "2023-04-12T13:31:13.84969",
+  "end" : "2023-04-12T14:31:13.849704"
 }</code></pre>
 </div>
 </div>
@@ -716,7 +716,7 @@ Content-Length: 85
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /schedules/mentor/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/schedules/mentor/1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -744,7 +744,7 @@ Content-Length: 111
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /schedules/mentee/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/schedules/mentee/1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -772,7 +772,7 @@ Content-Length: 101
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /schedules/mentor/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/schedules/mentor/1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -783,7 +783,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 532
+Content-Length: 531
 
 {
   "code" : "200 OK",
@@ -793,15 +793,15 @@ Content-Length: 532
     "mentoringRoomTitle" : "방제",
     "mentorName" : "김멘토",
     "menteeName" : "김학생",
-    "start" : "2023-04-08T11:52:05.934283",
-    "end" : "2023-04-08T12:52:05.934295"
+    "start" : "2023-04-12T13:31:13.87232",
+    "end" : "2023-04-12T14:31:13.872335"
   }, {
     "scheduleId" : 2,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "김멘토",
     "menteeName" : "null",
-    "start" : "2023-04-08T11:52:05.934303",
-    "end" : "2023-04-08T12:52:05.934305"
+    "start" : "2023-04-12T13:31:13.872343",
+    "end" : "2023-04-12T14:31:13.872345"
   } ]
 }</code></pre>
 </div>
@@ -814,7 +814,7 @@ Content-Length: 532
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /schedules/mentee/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/schedules/mentee/1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -825,7 +825,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 536
+Content-Length: 535
 
 {
   "code" : "200 OK",
@@ -835,15 +835,15 @@ Content-Length: 536
     "mentoringRoomTitle" : "방제",
     "mentorName" : "김멘토",
     "menteeName" : "김학생",
-    "start" : "2023-04-08T11:52:05.92431",
-    "end" : "2023-04-08T12:52:05.924322"
+    "start" : "2023-04-12T13:31:13.860697",
+    "end" : "2023-04-12T14:31:13.86072"
   }, {
     "scheduleId" : 2,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "이멘토",
     "menteeName" : "김학생",
-    "start" : "2023-04-08T11:52:05.924331",
-    "end" : "2023-04-08T12:52:05.924333"
+    "start" : "2023-04-12T13:31:13.86073",
+    "end" : "2023-04-12T14:31:13.860732"
   } ]
 }</code></pre>
 </div>
@@ -856,7 +856,7 @@ Content-Length: 536
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /schedules/end/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /api/schedules/end/1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -883,7 +883,7 @@ Content-Length: 111
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-04-07 22:36:33 +0900
+Last updated 2023-04-08 15:01:37 +0900
 </div>
 </div>
 </body>

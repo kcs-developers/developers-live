@@ -42,7 +42,7 @@ public class ScheduleControllerTest {
 
   @MockBean ScheduleServiceImpl scheduleService;
 
-  private static final String BASE_URL = "/schedules";
+  private static final String BASE_URL = "/api/schedules";
 
   @Test
   void addSchedule() throws Exception {

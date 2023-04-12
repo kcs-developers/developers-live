@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/room")
+@RequestMapping("/api/room")
 @RestController
 public class RoomController {
     private final RoomService roomService;
