@@ -1,7 +1,7 @@
 package com.developers.live.mentoring.controller;
 
-import com.developers.live.mentoring.service.ScheduleService;
 import com.developers.live.mentoring.dto.*;
+import com.developers.live.mentoring.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -56,6 +56,13 @@ public class ScheduleController {
   public ResponseEntity<MentoringEndResponseDto> endMentoring(@PathVariable Long scheduleId) {
     MentoringEndResponseDto response = scheduleService.endMentoring(scheduleId);
     log.info("회의 종료 후 관련 데이터 정리 요청 API: " + response);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @GetMapping("/{mentoringRoomId}")
+  public ResponseEntity<ScheduleListResponseDto> getMentoringRoomSchedules(@PathVariable Long mentoringRoomId) {
+    ScheduleListResponseDto response = scheduleService.getMentoringRoomSchedules(mentoringRoomId);
+    log.info("신청 가능한 스케쥴 조회 API: " + response);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 }

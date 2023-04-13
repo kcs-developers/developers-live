@@ -170,4 +170,16 @@ public class ScheduleServiceImpl implements ScheduleService {
               .build();
     }
   }
+
+  @Override
+  public ScheduleListResponseDto getMentoringRoomSchedules(Long mentoringRoomId) {
+    List<Schedule> schedules = scheduleRepository.findAllByMentoringRoomIdAndMenteeIdIsNull(mentoringRoomId);
+    List<ScheduleGetDto> result = schedules.stream().map((schedule -> entityToDto(schedule))).toList();
+
+    return ScheduleListResponseDto.builder()
+            .code(HttpStatus.OK.toString())
+            .msg("신청가능한 스케쥴 목록입니다.")
+            .data(result)
+            .build();
+  }
 }

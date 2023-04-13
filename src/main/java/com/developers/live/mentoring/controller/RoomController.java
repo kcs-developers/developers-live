@@ -63,4 +63,11 @@ public class RoomController {
         log.info("검색어 이용해 방 목록 조회: " + response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/mentor/{mentorId}")
+    public ResponseEntity<RoomListResponseDto> roomListWithMentorId(@PathVariable Long mentorId) {
+        RoomListResponseDto response = roomService.getRoomWithMentorId(mentorId);
+        log.info("멘토 Id로 방 목록 조회: " + response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

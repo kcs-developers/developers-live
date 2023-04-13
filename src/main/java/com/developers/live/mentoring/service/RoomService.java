@@ -22,6 +22,7 @@ public interface RoomService {
   RoomUpdateResponseDto updateRoom(RoomUpdateRequestDto req);
   RoomDeleteResponseDto deleteRoom(Long mentoringRoomId);
   RoomListResponseDto getRoomWithSearchingWord(String searchingWord);
+  RoomListResponseDto getRoomWithMentorId(Long mentorId);
 
   default String getMentorName(Long mentorId) {
     RestTemplate restTemplate = new RestTemplate();
