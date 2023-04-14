@@ -90,6 +90,8 @@ public class RoomServiceImpl implements RoomService {
 
       room.updateRoomInfo(req.getTitle().replaceAll("\\s+", " "), req.getDescription());
 
+      System.out.println("수정된 방 제목: " + room.getTitle());
+
       response = RoomUpdateResponseDto.builder()
               .code(HttpStatus.OK.toString())
               .msg("방 정보 수정이 완료되었습니다.")
@@ -153,6 +155,18 @@ public class RoomServiceImpl implements RoomService {
     return RoomListResponseDto.builder()
             .code(HttpStatus.OK.toString())
             .msg("멘토 Id로 멘토링룸 조회가 완료되었습니다.")
+            .data(dtoList)
+            .build();
+  }
+
+  @Override
+  public RoomListResponseDto getRoomTop10() {
+    List<Room> roomList = roomRepository.findTop10ByOrderByCreatedAt();
+    List<RoomGetDto> dtoList = roomList.stream().map(room -> entityToDto(room)).toList();
+
+    return RoomListResponseDto.builder()
+            .code(HttpStatus.OK.toString())
+            .msg("최신순으로 정렬 후 상위 10개 방 정보 조회가 완료되었습니다.")
             .data(dtoList)
             .build();
   }

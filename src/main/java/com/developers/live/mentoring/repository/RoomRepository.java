@@ -13,4 +13,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
   List<Room> findAllByOrderByCreatedAtDesc(Pageable pageable);
   List<Room> findAllByCreatedAtBeforeOrderByCreatedAtDesc(LocalDateTime lastDateTime, Pageable pageable);
   List<Room> findAllByMentorId(Long mentorId);
+  List<Room> findTop10ByOrderByCreatedAt();
 }

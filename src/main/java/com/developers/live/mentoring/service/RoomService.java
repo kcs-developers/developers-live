@@ -23,6 +23,7 @@ public interface RoomService {
   RoomDeleteResponseDto deleteRoom(Long mentoringRoomId);
   RoomListResponseDto getRoomWithSearchingWord(String searchingWord);
   RoomListResponseDto getRoomWithMentorId(Long mentorId);
+  RoomListResponseDto getRoomTop10();
 
   default String getMentorName(Long mentorId) {
     RestTemplate restTemplate = new RestTemplate();

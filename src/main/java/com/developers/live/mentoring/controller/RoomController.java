@@ -70,4 +70,11 @@ public class RoomController {
         log.info("멘토 Id로 방 목록 조회: " + response);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/top")
+    public ResponseEntity<RoomListResponseDto> roomListTop10() {
+        RoomListResponseDto response = roomService.getRoomTop10();
+        log.info("가장 최신에 만들어진 방 10개 조회: " + response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
