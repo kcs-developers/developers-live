@@ -2,6 +2,7 @@ package com.developers.live.controller;
 
 import com.developers.live.mentoring.controller.RoomController;
 import com.developers.live.mentoring.dto.*;
+import com.developers.live.mentoring.entity.Schedule;
 import com.developers.live.mentoring.service.RoomServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -221,5 +222,86 @@ public class RoomControllerTest {
 
     // then
     verify(roomService, times(1)).deleteRoom(mentoringRoomId);
+  }
+
+  @Test
+  void getRoomsWithMentorId() throws Exception {
+    // given
+    Long mentorId = 1L;
+    List<RoomGetDto> roomList = new ArrayList<>();
+    RoomGetDto room1 = RoomGetDto.builder()
+            .mentoringRoomId(1L)
+            .mentorName("김멘토")
+            .title("첫번째 방")
+            .description("첫번째 방입니다.")
+            .createdAt(LocalDateTime.now())
+            .build();
+    RoomGetDto room2 = RoomGetDto.builder()
+            .mentoringRoomId(1L)
+            .mentorName("김멘토")
+            .title("두번째 방")
+            .description("두번째 방입니다.")
+            .createdAt(LocalDateTime.now())
+            .build();
+
+    RoomListResponseDto response = RoomListResponseDto.builder()
+            .code(HttpStatus.OK.toString())
+            .msg("멘토 Id로 멘토링룸 조회가 완료되었습니다.")
+            .data(roomList)
+            .build();
+
+    given(roomService.getRoomWithMentorId(any())).willReturn(response);
+
+    // when
+    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/mentor/" + String.valueOf(mentorId)))
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(MockMvcRestDocumentation.document("room/get-mentorId",
+                    Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint())))
+            .andExpect(status().isOk())
+            .andExpect(content().json(objectMapper.writeValueAsString(response)));
+
+    // then
+    verify(roomService, times(1)).getRoomWithMentorId(mentorId);
+  }
+
+  @Test
+  void getTop10() throws Exception {
+    // given
+    List<RoomGetDto> roomList = new ArrayList<>();
+    RoomGetDto room1 = RoomGetDto.builder()
+            .mentoringRoomId(1L)
+            .mentorName("김멘토")
+            .title("첫번째 방")
+            .description("첫번째 방입니다.")
+            .createdAt(LocalDateTime.now())
+            .build();
+    RoomGetDto room2 = RoomGetDto.builder()
+            .mentoringRoomId(2L)
+            .mentorName("이멘토")
+            .title("두번째 방")
+            .description("두번째 방입니다.")
+            .createdAt(LocalDateTime.now())
+            .build();
+    roomList.add(room1);
+    roomList.add(room2);
+    RoomListResponseDto response = RoomListResponseDto.builder()
+            .code(HttpStatus.OK.toString())
+            .msg("최신순으로 정렬 후 상위 10개 방 정보 조회가 완료되었습니다.")
+            .data(roomList)
+            .build();
+    given(roomService.getRoomTop10()).willReturn(response);
+
+    // when
+    mockMvc.perform(get(BASE_URL + "/top"))
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(MockMvcRestDocumentation.document("room/top-list",
+                    Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint())))
+            .andExpect(status().isOk())
+            .andExpect(content().json(objectMapper.writeValueAsString(response)));
+
+    // then
+    verify(roomService, times(1)).getRoomTop10();
   }
 }

@@ -145,16 +145,16 @@ public class ScheduleControllerTest {
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김학생")
-            .start(LocalDateTime.now())
-            .end(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now().plusHours(1))
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("null")
-            .start(LocalDateTime.now())
-            .end(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now().plusHours(1))
             .build();
     scheduleList.add(schedule1);
     scheduleList.add(schedule2);
@@ -191,16 +191,16 @@ public class ScheduleControllerTest {
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김학생")
-            .start(LocalDateTime.now())
-            .end(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now().plusHours(1))
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
             .mentoringRoomTitle("방제")
             .mentorName("이멘토")
             .menteeName("김학생")
-            .start(LocalDateTime.now())
-            .end(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now().plusHours(1))
             .build();
     scheduleList.add(schedule1);
     scheduleList.add(schedule2);
@@ -250,5 +250,49 @@ public class ScheduleControllerTest {
 
     // then
     verify(scheduleService, times(1)).endMentoring(scheduleId);
+  }
+
+  @Test
+  void getSchedulesWithRoomId() throws Exception {
+    // given
+    Long mentoringRoomId = 1L;
+    List<ScheduleGetDto> scheduleList = new ArrayList<>();
+    ScheduleGetDto schedule1 = ScheduleGetDto.builder()
+            .scheduleId(1L)
+            .mentoringRoomTitle("방제")
+            .mentorName("김멘토")
+            .menteeName("김멘티")
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now().plusHours(1))
+            .build();
+    ScheduleGetDto schedule2 = ScheduleGetDto.builder()
+            .scheduleId(2L)
+            .mentoringRoomTitle("방제")
+            .mentorName("이멘토")
+            .startDate(LocalDateTime.now())
+            .endDate(LocalDateTime.now().plusHours(1))
+            .build();
+    scheduleList.add(schedule1);
+    scheduleList.add(schedule2);
+
+    ScheduleListResponseDto response = ScheduleListResponseDto.builder()
+            .code(HttpStatus.OK.toString())
+            .msg("신청가능한 스케쥴 목록입니다.")
+            .data(scheduleList)
+            .build();
+
+    given(scheduleService.getMentoringRoomSchedules(any())).willReturn(response);
+
+    // when
+    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + String.valueOf(mentoringRoomId)))
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(MockMvcRestDocumentation.document("schedule/get-mentoringRoomId",
+                    Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                    Preprocessors.preprocessResponse(Preprocessors.prettyPrint())))
+            .andExpect(status().isOk())
+            .andExpect(content().json(objectMapper.writeValueAsString(response)));
+
+    // then
+    verify(scheduleService, times(1)).getMentoringRoomSchedules(mentoringRoomId);
   }
 }
