@@ -21,6 +21,7 @@ public interface ScheduleService {
   ScheduleListResponseDto getScheduleListAsMentee(Long memberId);
   String getMentoringRoomTitle(Long mentoringRoomId);
   MentoringEndResponseDto endMentoring(Long scheduleId);
+  ScheduleListResponseDto getMentoringRoomSchedules(Long mentoringRoomId);
 
   RestTemplate restTemplate = new RestTemplate();
 
@@ -67,8 +68,8 @@ public interface ScheduleService {
             .mentoringRoomTitle(getMentoringRoomTitle(entity.getMentoringRoomId()))
             .mentorName(getMentorName(entity.getMentorId()))
             .menteeName(entity.getMenteeId() == null ? null : getMemberName(entity.getMenteeId()))
-            .start(entity.getStart())
-            .end(entity.getEnd())
+            .startDate(entity.getStart())
+            .endDate(entity.getEnd())
             .build();
   }
 }

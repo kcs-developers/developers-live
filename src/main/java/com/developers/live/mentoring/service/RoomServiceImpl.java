@@ -57,6 +57,13 @@ public class RoomServiceImpl implements RoomService {
 
   @Override
   public RoomAddResponseDto addRoom(RoomAddRequestDto req) {
+    if (roomRepository.findAllByMentorId(req.getMentorId()).size() >= 20) {
+      return RoomAddResponseDto.builder()
+              .code(HttpStatus.BAD_REQUEST.toString())
+              .msg("방은 최대 20개까지만 생성할 수 있습니다.")
+              .data(null)
+              .build();
+    }
     Room result = roomRepository.save(
             Room.builder()
             .mentorId(req.getMentorId())
@@ -134,6 +141,18 @@ public class RoomServiceImpl implements RoomService {
     return RoomListResponseDto.builder()
             .code(HttpStatus.OK.toString())
             .msg("검색어로 멘토링룸 목록 조회가 완료되었습니다.")
+            .data(dtoList)
+            .build();
+  }
+
+  @Override
+  public RoomListResponseDto getRoomWithMentorId(Long mentorId) {
+    List<Room> roomList = roomRepository.findAllByMentorId(mentorId);
+    List<RoomGetDto> dtoList = roomList.stream().map(room -> entityToDto(room)).toList();
+
+    return RoomListResponseDto.builder()
+            .code(HttpStatus.OK.toString())
+            .msg("멘토 Id로 멘토링룸 조회가 완료되었습니다.")
             .data(dtoList)
             .build();
   }

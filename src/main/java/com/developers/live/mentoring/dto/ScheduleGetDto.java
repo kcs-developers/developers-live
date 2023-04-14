@@ -16,6 +16,6 @@ public class ScheduleGetDto {
   private String mentoringRoomTitle;
   private String mentorName;
   private String menteeName;
-  private LocalDateTime start;
-  private LocalDateTime end;
+  private LocalDateTime startDate;
+  private LocalDateTime endDate;
 }
