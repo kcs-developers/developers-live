@@ -29,7 +29,7 @@ public interface ScheduleService {
     // TODO: 멘토 정보 조회 중 예외 처리
     // TODO: 추후 uri 변경 필요
     URI uri = UriComponentsBuilder
-            .fromUriString("http://localhost:9000")
+            .fromUriString("http://a09a509d916844c68a2817f8ebfb122c-1547327392.ap-northeast-2.elb.amazonaws.com")
             .path("/api/mentor")
             .queryParam("mentorId", mentorId)
             .encode()
@@ -44,7 +44,7 @@ public interface ScheduleService {
     // TODO: 멘토 정보 조회 중 예외 처리
     // TODO: 추후 uri 변경 필요
     URI uri = UriComponentsBuilder
-            .fromUriString("http://localhost:9000")
+            .fromUriString("http://a09a509d916844c68a2817f8ebfb122c-1547327392.ap-northeast-2.elb.amazonaws.com")
             .path("/api/member")
             .queryParam("memberId", memberId)
             .encode()
