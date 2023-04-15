@@ -12,5 +12,7 @@ public class DailyCoDeleteRequest {
     @NotNull
     private String roomName;
     @NotNull(message = "멘토만 삭제 가능합니다!")
-    private Boolean isMentor;
+    private Long userId;
+    @NotNull
+    private Long scheduleId;
 }
