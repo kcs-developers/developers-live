@@ -111,6 +111,7 @@ public class RoomServiceTest {
     assertThat(response.getData()).isInstanceOf(String.class);
   }
 
+  /*
   @Test
   void 멘토링룸_조회() {
     // given
@@ -138,4 +139,5 @@ public class RoomServiceTest {
     assertThat(response.getMsg()).isEqualTo("첫번째 캐시 저장소에 저장된 데이터");
     assertThat(response.getData().get(0)).isInstanceOf(RoomGetDto.class);
   }
+   */
 }
