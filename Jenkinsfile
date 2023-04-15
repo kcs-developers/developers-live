@@ -91,9 +91,9 @@ pipeline {
         // 이미지 태그 변경 후 메인 브랜치에 푸시
         sh "git config --global user.email ${gitEmail}"
         sh "git config --global user.name ${gitName}"
-        sh "sed -i 's@${dockerHubRegistry}:.*@${dockerHubRegistry}:${currentBuild.number}@g' deploy/deploy-live.yml"
-        sh "chmod +x deploy/deploy-live.yml"
-        sh "git add deploy/deploy-live.yml"
+        sh "sed -i 's@${dockerHubRegistry}:.*@${dockerHubRegistry}:${currentBuild.number}@g' deploy/live/deploy-live.yml"
+        sh "chmod +x deploy/live/deploy-live.yml"
+        sh "git add deploy/live/deploy-live.yml"
         sh "git status"
         sh "git commit -m 'fix:${dockerHubRegistry} ${currentBuild.number} image versioning'"
         sh "git branch -M main"
