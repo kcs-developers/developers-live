@@ -21,7 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(JpaConfig.class)
-@ActiveProfiles("local")
+@ActiveProfiles("live-prod")
 public class ScheduleRepositoryTest {
 
   @Autowired
