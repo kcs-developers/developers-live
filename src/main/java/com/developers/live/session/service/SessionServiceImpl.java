@@ -1,5 +1,7 @@
 package com.developers.live.session.service;
 
+import com.developers.live.mentoring.entity.Schedule;
+import com.developers.live.mentoring.repository.ScheduleRepository;
 import com.developers.live.session.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -22,6 +25,7 @@ import java.util.Set;
 public class SessionServiceImpl implements SessionService {
 
     private final RedisTemplate<String, Object> redisTemplate; // 실제 서비스 redisTemplate
+    private final ScheduleRepository scheduleRepository; // 스케쥴에 해당하는 사용자 확인
 
     @Override
     public SessionRedisSaveResponse enter(SessionRedisSaveRequest request){
@@ -29,22 +33,34 @@ public class SessionServiceImpl implements SessionService {
         String userName = request.getUserName();
         Long expireTime = request.getTime();
 
-        try{
-            // 1. Redis 데이터 삽입 로직 수행
-            redisTemplate.opsForSet().add(roomName, userName);
-            redisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
-            redisTemplate.opsForHash().put("rooms", roomName, userName);
+        // 스케쥴 기반으로, 스케쥴에 해당 mentee가 등록된 사용자인지 여부 체크
+        Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
+        if(schedule.isPresent()) {
+            if (schedule.get().getMenteeId().equals(request.getUserId())) {
+                try {
+                    // 1. Redis 데이터 삽입 로직 수행
+                    redisTemplate.opsForSet().add(roomName, userName);
+                    redisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
+                    redisTemplate.opsForHash().put("rooms", roomName, userName);
 
-            // 2. 삽입한 데이터 클라이언트에 전달
-            SessionRedisSaveResponse response = SessionRedisSaveResponse.builder()
-                    .code(HttpStatus.OK.toString())
-                    .msg("정상적으로 처리하였습니다.")
-                    .data(redisTemplate.opsForSet().members(roomName).toString()).build();
-            log.info("Redis 세션 저장! "+roomName+"에 "+userName+"저장!");
-            return response;
-        }catch (Exception e){
-            log.error("Redis 세션 저장 오류! 방 정보: "+roomName+" 사용자 정보: "+userName, e);
-            throw new RedisException("Redis 세션 저장에 요류가 발생하였습니다. ", e);
+                    // 2. 삽입한 데이터 클라이언트에 전달
+                    SessionRedisSaveResponse response = SessionRedisSaveResponse.builder()
+                            .code(HttpStatus.OK.toString())
+                            .msg("정상적으로 처리하였습니다.")
+                            .data(redisTemplate.opsForSet().members(roomName).toString()).build();
+                    log.info("Redis 세션 저장! " + roomName + "에 " + userName + "저장!");
+                    return response;
+                } catch (Exception e) {
+                    log.error("Redis 세션 저장 오류! 방 정보: " + roomName + " 사용자 정보: " + userName, e);
+                    throw new RedisException("Redis 세션 저장에 요류가 발생하였습니다. ", e);
+                }
+            } else {
+                log.error("스케쥴에 예약한 사용자만 입장할 수 있습니다! 요청한 사용자: " + request.getUserName());
+                throw new IllegalArgumentException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
+            }
+        }else{
+            log.error("스케쥴 정보 오류!");
+            throw new InvalidDataAccessApiUsageException("해당 일정은 존재하지 않습니다!");
         }
     }
 
