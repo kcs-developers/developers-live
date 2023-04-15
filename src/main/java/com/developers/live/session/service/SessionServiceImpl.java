@@ -36,7 +36,7 @@ public class SessionServiceImpl implements SessionService {
         // 스케쥴 기반으로, 스케쥴에 해당 mentee가 등록된 사용자인지 여부 체크
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
-            if (schedule.get().getMenteeId().equals(request.getUserId())) {
+            if (schedule.get().getMenteeId().equals(request.getUserId()) || schedule.get().getMentorId().equals(request.getUserId())) {
                 try {
                     // 1. Redis 데이터 삽입 로직 수행
                     redisTemplate.opsForSet().add(roomName, userName);
@@ -102,30 +102,37 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionRedisRemoveResponse remove(SessionRedisRemoveRequest request) {
         String roomName = request.getRoomName();
-        if (request.getIsMentor()) {
-            try {
-                if (!redisTemplate.opsForHash().hasKey("rooms", roomName)) {
-                    log.error("Redis 세션 삭제 오류! ", roomName);
-                    throw new IllegalArgumentException("Redis에서 해당 세션은 존재하지 않습니다. ");
-                }
-                // 1. Redis에 request.getRoomId()를 가지고 가서 해당하는 데이터 삭제
-                redisTemplate.opsForHash().delete("rooms", roomName);
 
-                // 2. 삭제한 데이터
-                SessionRedisRemoveResponse response = SessionRedisRemoveResponse.builder()
-                        .code(HttpStatus.OK.toString())
-                        .msg("정상적으로 처리되었습니다.")
-                        .data(String.valueOf(redisTemplate.delete(roomName)))
-                        .build();
-                log.info("Redis 세션 삭제 완료! " + roomName + "에 대한 세션 삭제!");
-                return response;
-            } catch (Exception e) {
-                log.error("Redis 세션 삭제 오류! ", e);
-                throw new IllegalArgumentException("Redis에서 세션을 삭제하는데 오류가 발생했습니다. ", e);
+        Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
+        if (schedule.isPresent()) {
+            if (schedule.get().getMentorId().equals(request.getUserId())) {
+                try {
+                    if (!redisTemplate.opsForHash().hasKey("rooms", roomName)) {
+                        log.error("Redis 세션 삭제 오류! ", roomName);
+                        throw new IllegalArgumentException("Redis에서 해당 세션은 존재하지 않습니다. ");
+                    }
+                    // 1. Redis에 request.getRoomId()를 가지고 가서 해당하는 데이터 삭제
+                    redisTemplate.opsForHash().delete("rooms", roomName);
+
+                    // 2. 삭제한 데이터
+                    SessionRedisRemoveResponse response = SessionRedisRemoveResponse.builder()
+                            .code(HttpStatus.OK.toString())
+                            .msg("정상적으로 처리되었습니다.")
+                            .data(String.valueOf(redisTemplate.delete(roomName)))
+                            .build();
+                    log.info("Redis 세션 삭제 완료! " + roomName + "에 대한 세션 삭제!");
+                    return response;
+                } catch (Exception e) {
+                    log.error("Redis 세션 삭제 오류! ", e);
+                    throw new IllegalArgumentException("Redis에서 세션을 삭제하는데 오류가 발생했습니다. ", e);
+                }
+            } else {
+                log.error("멘토 방 삭제 오류!");
+                throw new IllegalArgumentException("멘토만 방을 삭제할 수 있습니다!");
             }
         } else {
-            log.error("멘토 방 삭제 오류!");
-            throw new IllegalArgumentException("멘토만 방을 삭제할 수 있습니다!");
+            log.error("스케쥴 정보 오류!");
+            throw new InvalidDataAccessApiUsageException("해당 일정은 존재하지 않습니다!");
         }
     }
 }
