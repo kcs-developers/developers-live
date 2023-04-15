@@ -9,7 +9,7 @@ pipeline {
     githubCredential = 'git_cre'
     dockerHubRegistry = 'startdreamteam/developers-live-test'
     dockerHubRegistryCredential = 'docker_cre'
-    applicationGitAddress = 'https://github.com/kcs-developers/developers-member.git'
+    applicationGitAddress = 'https://github.com/kcs-developers/developers-live.git'
     k8sGitHttpAddress = 'https://github.com/start-dream-team/manifest.git'
     k8sGitSshAddress = 'git@github.com:start-dream-team/manifest.git'
   }
