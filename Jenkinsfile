@@ -9,7 +9,7 @@ pipeline {
     githubCredential = 'git_cre'
     dockerHubRegistry = 'startdreamteam/developers-live-test'
     dockerHubRegistryCredential = 'docker_cre'
-    applicationGitAddress = 'https://github.com/start-dream-team/application.git'
+    applicationGitAddress = 'https://github.com/kcs-developers/developers-member.git'
     k8sGitHttpAddress = 'https://github.com/start-dream-team/manifest.git'
     k8sGitSshAddress = 'git@github.com:start-dream-team/manifest.git'
   }
@@ -17,7 +17,10 @@ pipeline {
     stage('Checkout Github') {
       steps {
           checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: githubCredential, url: applicationGitAddress ]]])
+          withCredentials([GitUsernamePassword(credentialsId: githubCredential, gitToolName: 'Default')]) {
+            sh 'git submodule update --init --recursive'
           }
+      }
       post {
         failure {
           echo 'Application Repository clone failure'
@@ -27,18 +30,10 @@ pipeline {
         }
       }
     }
-		stage('Update Git Submodules') {
-	    // Git submodule update
-      sh "git submodule update --init --recursive"
-    }
-    // stage('Build') {
-      // Build with application-prod.yml
-      // sh "./gradlew build -Penv=prod"
-    // }
     stage('Gradle Build') {
       steps {
-        sh 'gradle clean build -Penv=prod'
-      }
+          sh 'gradle clean build -Penv=prod'
+          }
       post {
         failure {
           echo 'Gradle jar build failure'
@@ -99,6 +94,7 @@ pipeline {
         sh "sed -i 's@${dockerHubRegistry}:.*@${dockerHubRegistry}:${currentBuild.number}@g' deploy/deploy-live.yml"
         sh "chmod +x deploy/deploy-live.yml"
         sh "git add deploy/deploy-live.yml"
+        sh "git status"
         sh "git commit -m 'fix:${dockerHubRegistry} ${currentBuild.number} image versioning'"
         sh "git branch -M main"
         sh "git remote remove origin"
