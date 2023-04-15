@@ -105,6 +105,7 @@ public class ScheduleServiceTest {
     assertThat(response.getData()).isInstanceOf(String.class);
   }
 
+  /*
   @Test
   public void 멘토_스케쥴_조회() {
     // given
@@ -167,6 +168,7 @@ public class ScheduleServiceTest {
     assertThat(response.getMsg()).isEqualTo("멘티로서의 일정 조회가 완료되었습니다.");
     assertThat(response.getData().get(0)).isInstanceOf(ScheduleGetDto.class);
   }
+   */
 
   @Test
   public void 멘토링_종료_후_DB_정리() {

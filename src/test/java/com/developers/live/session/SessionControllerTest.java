@@ -1,6 +1,7 @@
 package com.developers.live.session;
 
 import com.developers.live.config.RedisConfig;
+import com.developers.live.session.controller.SessionController;
 import com.developers.live.session.dto.SessionRedisRemoveRequest;
 import com.developers.live.session.dto.SessionRedisSaveRequest;
 import com.developers.live.session.service.SessionServiceImpl;
@@ -12,13 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,10 +25,9 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(properties = "spring.main.allow-bean-definition-overriding=true")
-@AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(value = SessionController.class)
 @Import(RedisConfig.class)
 public class SessionControllerTest {
     @Autowired

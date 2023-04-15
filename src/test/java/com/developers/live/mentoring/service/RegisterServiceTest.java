@@ -4,8 +4,6 @@ import com.developers.live.mentoring.dto.RegisterRequestDto;
 import com.developers.live.mentoring.dto.RegisterResponseDto;
 import com.developers.live.mentoring.entity.Schedule;
 import com.developers.live.mentoring.repository.ScheduleRepository;
-import com.developers.live.mentoring.service.RegisterServiceImpl;
-import com.developers.live.mentoring.service.ScheduleServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
