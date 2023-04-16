@@ -28,6 +28,8 @@ public class Room extends BaseTime {
     private Long mentoringRoomId;
     @Column(name = "mentor_id", nullable = false)
     private Long mentorId;
+    @Column(name = "mentor_name", nullable = false)
+    private String mentorName;
     @Column(name = "title", nullable = false, length = 50)
     private String title;
     @Column(name = "description", length = 500)
@@ -42,8 +44,9 @@ public class Room extends BaseTime {
     }
 
     @Builder
-    public Room(Long mentorId, String title, String description) {
+    public Room(Long mentorId, String mentorName, String title, String description) {
         this.mentorId = mentorId;
+        this.mentorName = mentorName;
         this.title = title;
         this.description = description;
     }

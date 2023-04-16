@@ -46,6 +46,7 @@ public class ScheduleServiceTest {
     ScheduleAddRequestDto req = ScheduleAddRequestDto.builder()
             .mentoringRoomId(mentoringRoomId)
             .mentorId(1L)
+            .mentorName("김멘토")
             .start(LocalDateTime.now())
             .end(LocalDateTime.now().plusHours(1))
             .build();

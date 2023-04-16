@@ -66,10 +66,11 @@ public class RoomServiceImpl implements RoomService {
     }
     Room result = roomRepository.save(
             Room.builder()
-            .mentorId(req.getMentorId())
-            .title(req.getTitle())
-            .description(req.getDescription())
-            .build()
+                    .mentorId(req.getMentorId())
+                    .mentorName(req.getMentorName())
+                    .title(req.getTitle())
+                    .description(req.getDescription())
+                    .build()
     );
 
     return RoomAddResponseDto.builder()

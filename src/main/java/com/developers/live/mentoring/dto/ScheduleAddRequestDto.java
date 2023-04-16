@@ -1,6 +1,7 @@
 package com.developers.live.mentoring.dto;
 
 import com.developers.live.mentoring.entity.Schedule;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,9 @@ public class ScheduleAddRequestDto {
 
   @NotNull
   private Long mentorId;
+
+  @NotNull
+  private String mentorName;
 
   @NotNull
   private LocalDateTime start;

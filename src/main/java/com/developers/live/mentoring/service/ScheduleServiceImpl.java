@@ -32,6 +32,7 @@ public class ScheduleServiceImpl implements ScheduleService {
               Schedule.builder()
                       .mentoringRoomId(request.getMentoringRoomId())
                       .mentorId(request.getMentorId())
+                      .mentorName(request.getMentorName())
                       .start(request.getStart())
                       .end(request.getEnd())
                       .build());
@@ -95,7 +96,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     Optional<Schedule> optionalSchedule = scheduleRepository.findById(scheduleId);
 
     if (optionalSchedule.isPresent()) {
-      optionalSchedule.get().changeMentee(null);
+      optionalSchedule.get().changeMentee(null, null);
 
       return ScheduleDeleteResponseDto.builder()
               .code(HttpStatus.OK.toString())
