@@ -89,6 +89,7 @@ public class RoomControllerTest {
   void addRoom() throws Exception {
     // given
     Long mentorId = 1L;
+    String mentorName = "김멘토";
     String title = "방 제목";
     String description = "방 소개글";
 
@@ -102,6 +103,7 @@ public class RoomControllerTest {
 
     RoomAddRequestDto request = RoomAddRequestDto.builder()
             .mentorId(mentorId)
+            .mentorName(mentorName)
             .title(title)
             .description(description)
             .build();
