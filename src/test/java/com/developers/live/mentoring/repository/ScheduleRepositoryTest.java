@@ -2,12 +2,10 @@ package com.developers.live.mentoring.repository;
 
 import com.developers.live.config.JpaConfig;
 import com.developers.live.mentoring.entity.Schedule;
-import com.developers.live.mentoring.repository.ScheduleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -33,7 +31,9 @@ public class ScheduleRepositoryTest {
     Schedule room = Schedule.builder()
             .mentoringRoomId(1L)
             .mentorId(1L)
+            .mentorName("김멘토")
             .menteeId(2L)
+            .menteeName("김멘티")
             .start(LocalDateTime.now())
             .end(LocalDateTime.now().minusHours(1L))
             .build();
@@ -55,7 +55,9 @@ public class ScheduleRepositoryTest {
     Schedule schedule = Schedule.builder()
             .mentoringRoomId(1L)
             .mentorId(1L)
+            .mentorName("김멘토")
             .menteeId(2L)
+            .menteeName("김멘티")
             .start(LocalDateTime.now())
             .end(LocalDateTime.now().plusHours(1))
             .build();
@@ -78,6 +80,7 @@ public class ScheduleRepositoryTest {
       Schedule schedule = Schedule.builder()
               .mentoringRoomId(i)
               .mentorId(1L)
+              .mentorName("김멘토")
               .start(LocalDateTime.now())
               .end(LocalDateTime.now().plusHours(1))
               .build();
