@@ -49,8 +49,9 @@ public class ScheduleControllerTest {
     // given
     Long mentoringRoomId = 1L;
     Long mentorId = 1L;
-    LocalDateTime start = LocalDateTime.now();
-    LocalDateTime end = LocalDateTime.now().plusHours(1);
+    String mentorName = "김멘토";
+    LocalDateTime start = LocalDateTime.of(2023, 4, 15, 9, 0);
+    LocalDateTime end = start.plusHours(1);
 
     ScheduleAddResponseDto response = ScheduleAddResponseDto.builder()
             .code(HttpStatus.OK.toString())
@@ -63,6 +64,7 @@ public class ScheduleControllerTest {
     ScheduleAddRequestDto request = ScheduleAddRequestDto.builder()
             .mentoringRoomId(mentoringRoomId)
             .mentorId(mentorId)
+            .mentorName(mentorName)
             .start(start)
             .end(end)
             .build();
@@ -145,16 +147,16 @@ public class ScheduleControllerTest {
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김학생")
-            .startDate(LocalDateTime.now())
-            .endDate(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.of(2023, 4, 15, 9, 0))
+            .endDate(LocalDateTime.of(2023, 4, 15, 10, 0))
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("null")
-            .startDate(LocalDateTime.now())
-            .endDate(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.of(2023, 4, 14, 9, 0))
+            .endDate(LocalDateTime.of(2023, 4, 14, 10, 0))
             .build();
     scheduleList.add(schedule1);
     scheduleList.add(schedule2);
@@ -191,16 +193,16 @@ public class ScheduleControllerTest {
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김학생")
-            .startDate(LocalDateTime.now())
-            .endDate(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.of(2023, 4, 15, 9, 0))
+            .endDate(LocalDateTime.of(2023, 4, 15, 10, 0))
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
             .mentoringRoomTitle("방제")
             .mentorName("이멘토")
             .menteeName("김학생")
-            .startDate(LocalDateTime.now())
-            .endDate(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.of(2023, 4, 16, 9, 0))
+            .endDate(LocalDateTime.of(2023, 4, 16, 10, 0))
             .build();
     scheduleList.add(schedule1);
     scheduleList.add(schedule2);
@@ -262,15 +264,15 @@ public class ScheduleControllerTest {
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김멘티")
-            .startDate(LocalDateTime.now())
-            .endDate(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.of(2023, 4, 15, 9, 0))
+            .endDate(LocalDateTime.of(2023, 4, 15, 10, 0))
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
             .mentoringRoomTitle("방제")
             .mentorName("이멘토")
-            .startDate(LocalDateTime.now())
-            .endDate(LocalDateTime.now().plusHours(1))
+            .startDate(LocalDateTime.of(2023, 4, 16, 9, 0))
+            .endDate(LocalDateTime.of(2023, 4, 16, 10, 0))
             .build();
     scheduleList.add(schedule1);
     scheduleList.add(schedule2);

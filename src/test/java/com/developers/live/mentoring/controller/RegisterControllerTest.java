@@ -45,10 +45,12 @@ public class RegisterControllerTest {
     // given
     Long scheduleId = 1L;
     Long menteeId = 1L;
+    String menteeName = "김멘티";
 
     RegisterRequestDto request = RegisterRequestDto.builder()
             .scheduleId(scheduleId)
             .menteeId(menteeId)
+            .menteeName(menteeName)
             .build();
 
     RegisterResponseDto response = RegisterResponseDto.builder()

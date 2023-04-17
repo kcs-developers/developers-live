@@ -16,6 +16,9 @@ public class RoomAddRequestDto {
     private Long mentorId;
 
     @NotBlank
+    private String mentorName;
+
+    @NotBlank
     @Size(max = 50)
     private String title;
 

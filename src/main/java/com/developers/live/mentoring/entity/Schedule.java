@@ -34,21 +34,28 @@ public class Schedule extends BaseTime {
   private Long mentoringRoomId;
   @Column(name = "mentor_id", nullable = false)
   private Long mentorId;
+  @Column(name = "mentor_name", nullable = false)
+  private String mentorName;
   @Column(name = "mentee_id")
   private Long menteeId;
+  @Column(name = "mentee_name")
+  private String menteeName;
   @Column(name = "start", nullable = false)
   private LocalDateTime start;
   @Column(name = "end", nullable = false)
   private LocalDateTime end;
 
-  public void changeMentee(Long menteeId) {
+  public void changeMentee(Long menteeId, String menteeName) {
     this.menteeId = menteeId;
+    this.menteeName = menteeName;
   }
 
   @Builder
-  public Schedule(Long mentoringRoomId, Long mentorId, Long menteeId, LocalDateTime start, LocalDateTime end) {
+  public Schedule(Long mentoringRoomId, Long mentorId, String mentorName, Long menteeId, String menteeName, LocalDateTime start, LocalDateTime end) {
     this.mentoringRoomId = mentoringRoomId;
     this.mentorId = mentorId;
+    this.mentorName = mentorName;
+    this.menteeName = menteeName;
     this.menteeId = menteeId;
     this.start = start;
     this.end = end;

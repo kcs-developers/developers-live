@@ -31,6 +31,7 @@ public class RoomRepositoryTest {
         // given
         Room room = Room.builder()
                 .mentorId(1L)
+                .mentorName("김멘토")
                 .title("mentoring room")
                 .description("contents is ...")
                 .build();
@@ -49,6 +50,7 @@ public class RoomRepositoryTest {
         // given
         Room room = Room.builder()
                 .mentorId(1L)
+                .mentorName("김멘토")
                 .title("mentoring room")
                 .description("contents is ...")
                 .build();
@@ -71,6 +73,7 @@ public class RoomRepositoryTest {
         LongStream.rangeClosed(1, 50).forEach(i -> {
             Room room = Room.builder()
                     .mentorId(1L)
+                    .mentorName("멘토@"+i)
                     .title("mentoring room")
                     .description("contents is ...")
                     .build();

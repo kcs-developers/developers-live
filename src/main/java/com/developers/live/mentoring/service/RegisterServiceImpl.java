@@ -34,7 +34,7 @@ public class RegisterServiceImpl implements RegisterService {
         Long registeredMentee = Long.parseLong(String.valueOf(valueOperations.get(String.valueOf(request.getScheduleId()))));
 
         if (request.getMenteeId().equals(registeredMentee)) {
-          schedule.get().changeMentee(request.getMenteeId());
+          schedule.get().changeMentee(request.getMenteeId(), request.getMenteeName());
 
           return RegisterResponseDto.builder()
                   .code(HttpStatus.OK.toString())
