@@ -1,6 +1,7 @@
 package com.developers.live.session.controller;
 
 import com.developers.live.session.dto.dailyco.DailyCoCreateRequest;
+import com.developers.live.session.dto.dailyco.DailyCoDeleteRequest;
 import com.developers.live.session.dto.dailyco.DailyCoResponse;
 import com.developers.live.session.service.DailyCoService;
 import jakarta.validation.Valid;
@@ -23,8 +24,8 @@ public class DailyCoController {
     }
 
     @DeleteMapping
-    public ResponseEntity<DailyCoResponse> delete(@PathVariable String roomName) throws Exception{
-        DailyCoResponse response = dailyCoService.delete(roomName);
+    public ResponseEntity<DailyCoResponse> delete(@Valid @RequestBody DailyCoDeleteRequest request) throws Exception{
+        DailyCoResponse response = dailyCoService.delete(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

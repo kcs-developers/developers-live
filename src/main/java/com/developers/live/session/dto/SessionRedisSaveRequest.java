@@ -13,7 +13,12 @@ public class SessionRedisSaveRequest {
     private String roomName;
     @NotNull
     private String userName;
+    @NotNull
+    private Long userId; // userId로 비교하기 있기 때문
 
     @NotNull
     private Long time;
+
+    @NotNull
+    private Long scheduleId; // 스케쥴 정보로 조회 필요
 }
