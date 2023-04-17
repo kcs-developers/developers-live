@@ -14,7 +14,7 @@ public class SessionRedisRemoveRequest {
     @NotNull
     private String roomName;
     @NotNull(message = "멘토만이 방을 삭제할 수 있습니다")
-    private String userId;
+    private Long userId;
     @NotNull
     private Long scheduleId;
 }
