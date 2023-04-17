@@ -28,6 +28,15 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     ScheduleAddResponseDto response;
     if (room.isPresent()) {
+      Optional<Schedule> anySame = scheduleRepository.findScheduleByMentoringRoomIdIsAndStartIs(request.getMentoringRoomId(), request.getStart());
+      if (anySame.isPresent()) {
+        return ScheduleAddResponseDto.builder()
+                .code(HttpStatus.BAD_REQUEST.toString())
+                .msg("같은 시간에 이미 일정이 존재합니다.")
+                .data(null)
+                .build();
+      }
+
       Schedule schedule = scheduleRepository.save(
               Schedule.builder()
                       .mentoringRoomId(request.getMentoringRoomId())
@@ -37,20 +46,19 @@ public class ScheduleServiceImpl implements ScheduleService {
                       .end(request.getEnd())
                       .build());
 
-      response = ScheduleAddResponseDto.builder()
+      return ScheduleAddResponseDto.builder()
               .code(HttpStatus.OK.toString())
               .msg("일정이 추가되었습니다.")
               .data(String.valueOf(schedule.getScheduleId()))
               .build();
     }
     else {
-      response = ScheduleAddResponseDto.builder()
+      return ScheduleAddResponseDto.builder()
               .code(HttpStatus.NOT_FOUND.toString())
               .msg("해당 스케줄에 대한 정보를 찾지 못했습니다.")
               .data(null)
               .build();
     }
-    return response;
   }
 
   // 멘토가 멘토링룸에 대한 일정을 취소할 때의 로직을 수행하는 메서드
