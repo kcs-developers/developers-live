@@ -33,11 +33,17 @@ public class DailyCoServiceImpl implements DailyCoService{
                     RestTemplate restTemplate = new RestTemplate();
                     String createRoomUrl = "https://api.daily.co/v1/rooms";
 
+                    DailyCoCreateRequest apiRequest = new DailyCoCreateRequest();
+                    apiRequest.setPrivacy(request.getPrivacy());
+                    if(apiRequest.getProperties() != null) {
+                        apiRequest.setProperties(request.getProperties());
+                    }
+
                     // 인증 헤더 추가 필요
                     HttpHeaders headers = new HttpHeaders();
                     headers.set("Content-Type", "application/json");
                     headers.set("Authorization", "Bearer 17885ccd0a16f1c5e4d642075773a775fc45b46b020cfac4023c3fb88f7aba01");
-                    HttpEntity<DailyCoCreateRequest> entity = new HttpEntity<>(request, headers);
+                    HttpEntity<DailyCoCreateRequest> entity = new HttpEntity<>(apiRequest, headers);
 
 
                     // 상태 추가 확인을 위한 entity 처리
