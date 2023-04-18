@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -15,6 +17,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,15 +31,11 @@ public class RedisConfig {
 
   @Bean
   public RedisConnectionFactory cacheRedisConnectionFactory() {
-    RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(host, port);
-
-    final SocketOptions socketoptions = SocketOptions.builder().connectTimeout(Duration.ofSeconds(10)).build();
-    final ClientOptions clientoptions = ClientOptions.builder().socketOptions(socketoptions).build();
-
-    LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().clientOptions(clientoptions)
-            .commandTimeout(Duration.ofSeconds(10)).shutdownTimeout(Duration.ZERO)
-            .build();
-    return new LettuceConnectionFactory(configuration, lettuceClientConfiguration);
+    RedisClusterConfiguration config = new RedisClusterConfiguration(); config. setMaxRedirects(3);
+    config.setClusterNodes(List.of(
+            new RedisNode(host, port)
+  ));
+    return new LettuceConnectionFactory(config);
   }
 
   @Bean(name = "redisTemplate")
