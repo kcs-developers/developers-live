@@ -468,7 +468,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 483
+Content-Length: 482
 
 {
   "code" : "200 OK",
@@ -478,13 +478,13 @@ Content-Length: 483
     "mentorName" : "김멘토",
     "title" : "첫번째 방",
     "description" : "첫번째 방입니다.",
-    "createdAt" : "2023-04-18T05:40:22.005116"
+    "createdAt" : "2023-04-19T00:43:05.089947"
   }, {
     "mentoringRoomId" : 2,
     "mentorName" : "이멘토",
     "title" : "두번째 방",
     "description" : "두번째 방입니다.",
-    "createdAt" : "2023-04-18T05:40:22.005127"
+    "createdAt" : "2023-04-19T00:43:05.08996"
   } ]
 }</code></pre>
 </div>
@@ -497,7 +497,7 @@ Content-Length: 483
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/room/next?lastDateTime=2023-04-18T04:40:21.987614 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/room/next?lastDateTime=2023-04-18T23:43:05.061234 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -521,13 +521,13 @@ Content-Length: 463
     "mentorName" : "김멘토",
     "title" : "첫번째 방",
     "description" : "첫번째 방입니다.",
-    "createdAt" : "2023-04-18T03:40:21.987632"
+    "createdAt" : "2023-04-18T22:43:05.061258"
   }, {
     "mentoringRoomId" : 2,
     "mentorName" : "이멘토",
     "title" : "두번째 방",
     "description" : "두번째 방입니다.",
-    "createdAt" : "2023-04-18T02:40:21.987642"
+    "createdAt" : "2023-04-18T21:43:05.061265"
   } ]
 }</code></pre>
 </div>
@@ -749,13 +749,13 @@ Content-Length: 517
     "mentorName" : "김멘토",
     "title" : "첫번째 방",
     "description" : "첫번째 방입니다.",
-    "createdAt" : "2023-04-18T05:40:22.015114"
+    "createdAt" : "2023-04-19T00:43:05.103082"
   }, {
     "mentoringRoomId" : 2,
     "mentorName" : "이멘토",
     "title" : "두번째 방",
     "description" : "두번째 방입니다.",
-    "createdAt" : "2023-04-18T05:40:22.015125"
+    "createdAt" : "2023-04-19T00:43:05.103093"
   } ]
 }</code></pre>
 </div>
@@ -890,13 +890,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 520
+Content-Length: 574
 
 {
   "code" : "200 OK",
   "msg" : "멘토로서의 일정 조회가 완료되었습니다.",
   "data" : [ {
     "scheduleId" : 1,
+    "mentoringRoomId" : 1,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "김멘토",
     "menteeName" : "김학생",
@@ -904,6 +905,7 @@ Content-Length: 520
     "endDate" : "2023-04-15T10:00:00"
   }, {
     "scheduleId" : 2,
+    "mentoringRoomId" : 1,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "김멘토",
     "menteeName" : "null",
@@ -935,13 +937,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 525
+Content-Length: 579
 
 {
   "code" : "200 OK",
   "msg" : "멘티로서의 일정 조회가 완료되었습니다.",
   "data" : [ {
     "scheduleId" : 1,
+    "mentoringRoomId" : 1,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "김멘토",
     "menteeName" : "김학생",
@@ -949,6 +952,7 @@ Content-Length: 525
     "endDate" : "2023-04-15T10:00:00"
   }, {
     "scheduleId" : 2,
+    "mentoringRoomId" : 1,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "이멘토",
     "menteeName" : "김학생",
@@ -1011,13 +1015,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Content-Length: 505
+Content-Length: 589
 
 {
   "code" : "200 OK",
-  "msg" : "신청가능한 스케쥴 목록입니다.",
+  "msg" : "멘토링룸에 대한 모든 스케쥴 조회가 완료되었습니다.",
   "data" : [ {
     "scheduleId" : 1,
+    "mentoringRoomId" : 1,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "김멘토",
     "menteeName" : "김멘티",
@@ -1025,6 +1030,7 @@ Content-Length: 505
     "endDate" : "2023-04-15T10:00:00"
   }, {
     "scheduleId" : 2,
+    "mentoringRoomId" : 1,
     "mentoringRoomTitle" : "방제",
     "mentorName" : "이멘토",
     "menteeName" : null,
@@ -1041,7 +1047,7 @@ Content-Length: 505
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-04-15 23:34:06 +0900
+Last updated 2023-04-15 17:46:07 +0900
 </div>
 </div>
 </body>
