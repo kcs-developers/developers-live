@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     // dailyco 관련 오류 처리
     @ExceptionHandler(DailyCoException.class)
     public ResponseEntity<?> handleDailyCoException(DailyCoException e){
-        log.error("DailyCo 오류ㅣ ", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("DailyCo에서 오류가 발생하였습니다. "+e.getMessage());
+        log.error("DailyCo 오류! ", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("DailyCo에서 오류가 발생하였습니다. "+e);
     }
 }
