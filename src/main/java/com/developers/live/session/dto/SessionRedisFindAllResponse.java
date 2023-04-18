@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class SessionRedisFindAllResponse {
     private String code;
     private String msg;
-    private String data;
+    private String urls;
+    private String users;
 }

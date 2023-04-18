@@ -75,10 +75,19 @@ public class SessionServiceImpl implements SessionService {
         try {
             // 1. Redis에서 모든 채팅방 정보를 가져온다.
             Set<Object> rooms = redisTemplate.opsForHash().keys("rooms");
-            Map<Object, Object> roomsInfo = new HashMap();
+            Map<Object, Object> roomUrl = new HashMap();
+            Map<String, Set<Object>> roomUsers = new HashMap<>();
+
             for (Object room : rooms) {
-                roomsInfo.put(room, redisTemplate.opsForSet().members(room.toString()));
+                String roomName = room.toString();
+                String url = redisTemplate.opsForHash().get("rooms", roomName).toString();
+                Set<Object> users = redisTemplate.opsForSet().members(roomName);
+
+                roomUrl.put(roomName, url);
+                roomUsers.put(roomName, users);
             }
+
+
 
             if (rooms == null || rooms.isEmpty()) {
                 log.error("Redis 세션 전체 출력 오류! ");
@@ -87,13 +96,16 @@ public class SessionServiceImpl implements SessionService {
 
             // Redis 반환 값 객체 변환
             ObjectMapper mapper = new ObjectMapper();
-            String jsonData = mapper.writeValueAsString(roomsInfo);
+            String urlData = mapper.writeValueAsString(roomUrl);
+            String userData = mapper.writeValueAsString(roomUsers);
+
 
             // 2. Redis에 있는 모든 채팅방 정보를 응답해야 한다.
             SessionRedisFindAllResponse response = SessionRedisFindAllResponse.builder()
                     .code(HttpStatus.OK.toString())
                     .msg("정상적으로 처리되었습니다.")
-                    .data(jsonData)
+                    .urls(urlData)
+                    .users(userData)
                     .build();
             log.info("Redis 세션 불러오기 완료!");
             return response;
