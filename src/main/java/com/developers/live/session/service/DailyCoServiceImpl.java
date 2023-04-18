@@ -21,9 +21,11 @@ public class DailyCoServiceImpl implements DailyCoService{
             RestTemplate restTemplate = new RestTemplate();
             String createRoomUrl = "https://api.daily.co/v1/rooms";
 
-            Map<String, Long> body = new HashMap<>();
-            body.put("nbf", nbf);
-            body.put("exp", exp);
+            Map<String, Long> properties = new HashMap<>();
+            properties.put("nbf", nbf);
+            properties.put("exp", exp);
+            Map<String, Object> body = new HashMap<>();
+            body.put("properties", properties);
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
