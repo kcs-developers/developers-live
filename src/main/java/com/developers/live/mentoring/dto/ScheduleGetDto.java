@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 public class ScheduleGetDto {
   private Long scheduleId;
+  private Long mentoringRoomId;
   private String mentoringRoomTitle;
   private String mentorName;
   private String menteeName;

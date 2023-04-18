@@ -17,6 +17,7 @@ public interface ScheduleService {
   default ScheduleGetDto entityToDto(Schedule entity) {
     return ScheduleGetDto.builder()
             .scheduleId(entity.getScheduleId())
+            .mentoringRoomId(entity.getMentoringRoomId())
             .mentoringRoomTitle(getMentoringRoomTitle(entity.getMentoringRoomId()))
             .mentorName(entity.getMentorName())
             .menteeName(entity.getMenteeName())
