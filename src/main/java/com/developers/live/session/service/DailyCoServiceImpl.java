@@ -54,11 +54,11 @@ public class DailyCoServiceImpl implements DailyCoService{
                         return response;
                     }else{
                         log.error("방 생성 실패: "+responseEntity.getBody());
-                        throw new DailyCoException("방 생성이 실패하였습니다! "+responseEntity.getBody(), responseEntity.getStatusCode().value());
+                        throw new DailyCoException("방 생성이 실패하였습니다! "+responseEntity, HttpStatus.INTERNAL_SERVER_ERROR.value());
                     }
                 }catch (Exception e){
                     log.error("방 생성 오류! ",e);
-                    throw new DailyCoException("dailyco에서 방 생성 오류가 발생하였습니다", HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    throw new DailyCoException("dailyco에서 방 생성 오류가 발생하였습니다"+e, HttpStatus.INTERNAL_SERVER_ERROR.value());
                 }
             } else{
                 log.error("방 생성 오류!");
