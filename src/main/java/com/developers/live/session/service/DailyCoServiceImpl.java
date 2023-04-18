@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,57 +23,32 @@ import java.util.Optional;
 public class DailyCoServiceImpl implements DailyCoService{
     private final ScheduleRepository scheduleRepository;
     @Override
-    public DailyCoResponse create(DailyCoRequest request) {
-        Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
-        if(schedule.isPresent()){
-            if(request.getUserId().equals(schedule.get().getMentorId())){
-                try{
-                    // resttemplate 을 통한 처리
-                    RestTemplate restTemplate = new RestTemplate();
-                    String createRoomUrl = "https://api.daily.co/v1/rooms";
+    public String create(Long nbf, Long exp) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String createRoomUrl = "https://api.daily.co/v1/rooms";
 
-                    DailyCoCreateRequest apiRequest = new DailyCoCreateRequest();
+            Map<String, Long> body = new HashMap<>();
+            body.put("nbf", nbf);
+            body.put("exp", exp);
 
-                    apiRequest.setPrivacy(request.getPrivacy());
-                    if(apiRequest.getProperties() != null) {
-                        apiRequest.setProperties(request.getProperties());
-                    }
-                    System.out.println(apiRequest);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-Type", "application/json");
+            headers.set("Authorization", "Bearer 17885ccd0a16f1c5e4d642075773a775fc45b46b020cfac4023c3fb88f7aba01");
+            HttpEntity<Map> entity = new HttpEntity<>(body, headers);
 
-                    // 인증 헤더 추가 필요
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set("Content-Type", "application/json");
-                    headers.set("Authorization", "Bearer 17885ccd0a16f1c5e4d642075773a775fc45b46b020cfac4023c3fb88f7aba01");
-                    HttpEntity<DailyCoCreateRequest> entity = new HttpEntity<>(apiRequest, headers);
+            ResponseEntity<DailyCoAnswer> responseEntity = restTemplate.postForEntity(createRoomUrl, entity, DailyCoAnswer.class);
 
-
-                    // 상태 추가 확인을 위한 entity 처리
-                    //body 값만 필요하면 object를 쓰는데, 이 부분은 고민이 조금 됌
-                    ResponseEntity<DailyCoAnswer> responseEntity = restTemplate.postForEntity(createRoomUrl, entity, DailyCoAnswer.class);
-
-                    if(responseEntity.getStatusCode()==HttpStatus.OK){
-                        log.info("방 생성 성공! "+responseEntity.getBody());
-                        DailyCoResponse response = DailyCoResponse.builder()
-                                .code(responseEntity.getStatusCode().toString())
-                                .msg("방이 성공적으로 개설되었습니다!")
-                                .data(responseEntity.getBody())
-                                .build();
-                        return response;
-                    }else{
-                        log.error("방 생성 실패: "+responseEntity.getBody());
-                        throw new DailyCoException("방 생성이 실패하였습니다! "+responseEntity, HttpStatus.INTERNAL_SERVER_ERROR.value());
-                    }
-                }catch (Exception e){
-                    log.error("방 생성 오류! ",e);
-                    throw new DailyCoException("dailyco에서 방 생성 오류가 발생하였습니다"+e, HttpStatus.INTERNAL_SERVER_ERROR.value());
-                }
-            } else{
-                log.error("방 생성 오류!");
-                throw new DailyCoException("멘토만이 방을 생성할 수 있습니다!", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                log.info("방 생성 성공! " + responseEntity.getBody());
+                return responseEntity.getBody().getUrl();
+            } else {
+                log.error("방 생성 실패: " + responseEntity.getBody());
+                throw new DailyCoException("방 생성이 실패하였습니다! " + responseEntity, HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
-        }else{
-            log.error("방 생성 오류!");
-            throw new DailyCoException("스케쥴 일정이 없습니다!", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        } catch (Exception e) {
+            log.error("방 생성 오류! ", e);
+            throw new DailyCoException("dailyco에서 방 생성 오류가 발생하였습니다" + e, HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
