@@ -1,4 +1,0 @@
-[submodule "developers-secret"]
-    path = developers-secret
-    url = https://github.com/start-dream-team/developers-secret.git
-    branch = main
