@@ -12,6 +12,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.MethodNotAllowedException;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -32,18 +33,16 @@ public class SessionServiceImpl implements SessionService {
         String roomName = request.getRoomName();
         String userName = request.getUserName();
         Long expireTime = request.getTime();
+        String roomUrl = request.getRoomUrl();
 
         // 스케쥴 기반으로, 스케쥴에 해당 mentee가 등록된 사용자인지 여부 체크
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
-            if (schedule.get().getMentorId().equals(request.getUserId())) {
-                return getSessionRedisSaveResponse(roomName, userName, expireTime);
-            } else if(schedule.get().getMenteeId().equals(request.getUserId())){
-                return getSessionRedisSaveResponse(roomName, userName, expireTime);
-            }
-            else {
+            if (schedule.get().getMentorId().equals(request.getUserId()) || schedule.get().getMenteeId().equals(request.getUserId())) {
+                return getSessionRedisSaveResponse(roomName, userName, roomUrl, expireTime);
+            } else {
                 log.error("스케쥴에 예약한 사용자만 입장할 수 있습니다! 요청한 사용자: " + request.getUserName());
-                throw new IllegalArgumentException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
+                throw new InvalidDataAccessApiUsageException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
             }
         } else {
             log.error("스케쥴 정보 오류!");
@@ -51,12 +50,12 @@ public class SessionServiceImpl implements SessionService {
         }
     }
 
-    private SessionRedisSaveResponse getSessionRedisSaveResponse(String roomName, String userName, Long expireTime) {
+    private SessionRedisSaveResponse getSessionRedisSaveResponse(String roomName, String userName, String roomUrl, Long expireTime) {
         try {
             // 1. Redis 데이터 삽입 로직 수행
             redisTemplate.opsForSet().add(roomName, userName);
             redisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
-            redisTemplate.opsForHash().put("rooms", roomName, userName);
+            redisTemplate.opsForHash().put("rooms", roomName, roomUrl);
 
             // 2. 삽입한 데이터 클라이언트에 전달
             SessionRedisSaveResponse response = SessionRedisSaveResponse.builder()

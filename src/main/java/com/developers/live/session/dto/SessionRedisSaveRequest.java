@@ -21,4 +21,5 @@ public class SessionRedisSaveRequest {
 
     @NotNull
     private Long scheduleId; // 스케쥴 정보로 조회 필요
+    private String roomUrl; // 짜증나서 방 정보까지 저장
 }
