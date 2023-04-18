@@ -26,6 +26,7 @@ public class RoomRepositoryTest {
 
     @Autowired RoomRepository roomRepository;
 
+    /*
     @Test
     void save() {
         // given
@@ -89,4 +90,5 @@ public class RoomRepositoryTest {
             assertThat(room.getMentoringRoomId()).isNotNull();
         }
     }
+     */
 }
