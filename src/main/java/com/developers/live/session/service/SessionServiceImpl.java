@@ -12,6 +12,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.MethodNotAllowedException;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -32,18 +33,16 @@ public class SessionServiceImpl implements SessionService {
         String roomName = request.getRoomName();
         String userName = request.getUserName();
         Long expireTime = request.getTime();
+        String roomUrl = request.getRoomUrl();
 
         // 스케쥴 기반으로, 스케쥴에 해당 mentee가 등록된 사용자인지 여부 체크
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
-            if (schedule.get().getMentorId().equals(request.getUserId())) {
-                return getSessionRedisSaveResponse(roomName, userName, expireTime);
-            } else if(schedule.get().getMenteeId().equals(request.getUserId())){
-                return getSessionRedisSaveResponse(roomName, userName, expireTime);
-            }
-            else {
+            if (schedule.get().getMentorId().equals(request.getUserId()) || schedule.get().getMenteeId().equals(request.getUserId())) {
+                return getSessionRedisSaveResponse(roomName, userName, roomUrl, expireTime);
+            } else {
                 log.error("스케쥴에 예약한 사용자만 입장할 수 있습니다! 요청한 사용자: " + request.getUserName());
-                throw new IllegalArgumentException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
+                throw new InvalidDataAccessApiUsageException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
             }
         } else {
             log.error("스케쥴 정보 오류!");
@@ -51,12 +50,12 @@ public class SessionServiceImpl implements SessionService {
         }
     }
 
-    private SessionRedisSaveResponse getSessionRedisSaveResponse(String roomName, String userName, Long expireTime) {
+    private SessionRedisSaveResponse getSessionRedisSaveResponse(String roomName, String userName, String roomUrl, Long expireTime) {
         try {
             // 1. Redis 데이터 삽입 로직 수행
             redisTemplate.opsForSet().add(roomName, userName);
             redisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
-            redisTemplate.opsForHash().put("rooms", roomName, userName);
+            redisTemplate.opsForHash().put("rooms", roomName, roomUrl);
 
             // 2. 삽입한 데이터 클라이언트에 전달
             SessionRedisSaveResponse response = SessionRedisSaveResponse.builder()
@@ -76,10 +75,19 @@ public class SessionServiceImpl implements SessionService {
         try {
             // 1. Redis에서 모든 채팅방 정보를 가져온다.
             Set<Object> rooms = redisTemplate.opsForHash().keys("rooms");
-            Map<Object, Object> roomsInfo = new HashMap();
+            Map<Object, Object> roomUrl = new HashMap();
+            Map<String, Set<Object>> roomUsers = new HashMap<>();
+
             for (Object room : rooms) {
-                roomsInfo.put(room, redisTemplate.opsForSet().members(room.toString()));
+                String roomName = room.toString();
+                String url = redisTemplate.opsForHash().get("rooms", roomName).toString();
+                Set<Object> users = redisTemplate.opsForSet().members(roomName);
+
+                roomUrl.put(roomName, url);
+                roomUsers.put(roomName, users);
             }
+
+
 
             if (rooms == null || rooms.isEmpty()) {
                 log.error("Redis 세션 전체 출력 오류! ");
@@ -88,13 +96,16 @@ public class SessionServiceImpl implements SessionService {
 
             // Redis 반환 값 객체 변환
             ObjectMapper mapper = new ObjectMapper();
-            String jsonData = mapper.writeValueAsString(roomsInfo);
+            String urlData = mapper.writeValueAsString(roomUrl);
+            String userData = mapper.writeValueAsString(roomUsers);
+
 
             // 2. Redis에 있는 모든 채팅방 정보를 응답해야 한다.
             SessionRedisFindAllResponse response = SessionRedisFindAllResponse.builder()
                     .code(HttpStatus.OK.toString())
                     .msg("정상적으로 처리되었습니다.")
-                    .data(jsonData)
+                    .urls(urlData)
+                    .users(userData)
                     .build();
             log.info("Redis 세션 불러오기 완료!");
             return response;
