@@ -144,6 +144,7 @@ public class ScheduleControllerTest {
     List<ScheduleGetDto> scheduleList = new ArrayList<>();
     ScheduleGetDto schedule1 = ScheduleGetDto.builder()
             .scheduleId(1L)
+            .mentoringRoomId(1L)
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김학생")
@@ -152,6 +153,7 @@ public class ScheduleControllerTest {
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
+            .mentoringRoomId(1L)
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("null")
@@ -190,6 +192,7 @@ public class ScheduleControllerTest {
     List<ScheduleGetDto> scheduleList = new ArrayList<>();
     ScheduleGetDto schedule1 = ScheduleGetDto.builder()
             .scheduleId(1L)
+            .mentoringRoomId(1L)
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김학생")
@@ -198,6 +201,7 @@ public class ScheduleControllerTest {
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
+            .mentoringRoomId(1L)
             .mentoringRoomTitle("방제")
             .mentorName("이멘토")
             .menteeName("김학생")
@@ -261,6 +265,7 @@ public class ScheduleControllerTest {
     List<ScheduleGetDto> scheduleList = new ArrayList<>();
     ScheduleGetDto schedule1 = ScheduleGetDto.builder()
             .scheduleId(1L)
+            .mentoringRoomId(1L)
             .mentoringRoomTitle("방제")
             .mentorName("김멘토")
             .menteeName("김멘티")
@@ -269,6 +274,7 @@ public class ScheduleControllerTest {
             .build();
     ScheduleGetDto schedule2 = ScheduleGetDto.builder()
             .scheduleId(2L)
+            .mentoringRoomId(1L)
             .mentoringRoomTitle("방제")
             .mentorName("이멘토")
             .startDate(LocalDateTime.of(2023, 4, 16, 9, 0))
@@ -279,7 +285,7 @@ public class ScheduleControllerTest {
 
     ScheduleListResponseDto response = ScheduleListResponseDto.builder()
             .code(HttpStatus.OK.toString())
-            .msg("신청가능한 스케쥴 목록입니다.")
+            .msg("멘토링룸에 대한 모든 스케쥴 조회가 완료되었습니다.")
             .data(scheduleList)
             .build();
 

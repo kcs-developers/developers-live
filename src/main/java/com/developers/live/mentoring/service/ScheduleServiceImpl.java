@@ -187,7 +187,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     return ScheduleListResponseDto.builder()
             .code(HttpStatus.OK.toString())
-            .msg("신청가능한 스케쥴 목록입니다.")
+            .msg("신청 및 취소 가능한 스케쥴 목록입니다.")
             .data(result)
             .build();
   }
