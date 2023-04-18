@@ -3,10 +3,7 @@ package com.developers.live.session.service;
 import com.developers.live.exception.DailyCoException;
 import com.developers.live.mentoring.entity.Schedule;
 import com.developers.live.mentoring.repository.ScheduleRepository;
-import com.developers.live.session.dto.dailyco.DailyCoAnswer;
-import com.developers.live.session.dto.dailyco.DailyCoCreateRequest;
-import com.developers.live.session.dto.dailyco.DailyCoDeleteRequest;
-import com.developers.live.session.dto.dailyco.DailyCoResponse;
+import com.developers.live.session.dto.dailyco.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpEntity;
@@ -24,7 +21,7 @@ import java.util.Optional;
 public class DailyCoServiceImpl implements DailyCoService{
     private final ScheduleRepository scheduleRepository;
     @Override
-    public DailyCoResponse create(DailyCoCreateRequest request) {
+    public DailyCoResponse create(DailyCoRequest request) {
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if(schedule.isPresent()){
             if(request.getUserId().equals(schedule.get().getMentorId())){
@@ -34,10 +31,12 @@ public class DailyCoServiceImpl implements DailyCoService{
                     String createRoomUrl = "https://api.daily.co/v1/rooms";
 
                     DailyCoCreateRequest apiRequest = new DailyCoCreateRequest();
+
                     apiRequest.setPrivacy(request.getPrivacy());
                     if(apiRequest.getProperties() != null) {
                         apiRequest.setProperties(request.getProperties());
                     }
+                    System.out.println(apiRequest);
 
                     // 인증 헤더 추가 필요
                     HttpHeaders headers = new HttpHeaders();
