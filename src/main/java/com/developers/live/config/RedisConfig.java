@@ -21,7 +21,7 @@ import java.time.Duration;
 public class RedisConfig {
 
   @Value("${spring.data.redis.host}")
-  public String host;
+  public String host
 
   @Value("${spring.data.redis.port}")
   public int port;
