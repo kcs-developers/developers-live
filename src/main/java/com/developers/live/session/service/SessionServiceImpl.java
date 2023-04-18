@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.MethodNotAllowedException;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -27,23 +29,41 @@ public class SessionServiceImpl implements SessionService {
 
     private final RedisTemplate<String, Object> redisTemplate; // 실제 서비스 redisTemplate
     private final ScheduleRepository scheduleRepository; // 스케쥴에 해당하는 사용자 확인
+    private final DailyCoServiceImpl dailyCoService; //dailyco 서버에서 요청 처리
 
     @Override
     public SessionRedisSaveResponse enter(SessionRedisSaveRequest request) {
         String roomName = request.getRoomName();
         String userName = request.getUserName();
         Long expireTime = request.getTime();
-        String roomUrl = request.getRoomUrl();
+        String roomUrl;
 
         // 스케쥴 기반으로, 스케쥴에 해당 mentee가 등록된 사용자인지 여부 체크
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
-            if (schedule.get().getMentorId().equals(request.getUserId()) || schedule.get().getMenteeId().equals(request.getUserId())) {
-                return getSessionRedisSaveResponse(roomName, userName, roomUrl, expireTime);
+            if (schedule.get().getMentorId().equals(request.getUserId())) {
+                roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
+                if (roomUrl == null) {
+                    LocalDateTime start = schedule.get().getStart();
+                    LocalDateTime end = schedule.get().getEnd();
+
+                    long nbf = start.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+                    long exp = end.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+
+                    roomUrl = dailyCoService.create(nbf, exp);
+                }
+            } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
+                roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
+                if (roomUrl == null) {
+                    log.error("멘토가 방을 아직 생성하지 않았습니다!");
+                    throw new InvalidDataAccessApiUsageException("멘토가 방을 아직 생성하지 않았습니다!");
+                }
             } else {
                 log.error("스케쥴에 예약한 사용자만 입장할 수 있습니다! 요청한 사용자: " + request.getUserName());
                 throw new InvalidDataAccessApiUsageException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
             }
+
+            return getSessionRedisSaveResponse(roomName, userName, roomUrl, expireTime);
         } else {
             log.error("스케쥴 정보 오류!");
             throw new InvalidDataAccessApiUsageException("해당 일정은 존재하지 않습니다!");
@@ -139,6 +159,9 @@ public class SessionServiceImpl implements SessionService {
                             .data(String.valueOf(redisTemplate.delete(roomName)))
                             .build();
                     log.info("Redis 세션 삭제 완료! " + roomName + "에 대한 세션 삭제!");
+
+                    dailyCoService.delete(request.getRoomName());
+
                     return response;
                 } catch (Exception e) {
                     log.error("Redis 세션 삭제 오류! ", e);
