@@ -164,7 +164,7 @@ public class SessionServiceImpl implements SessionService {
                             .build();
                     log.info("Redis 세션 삭제 완료! " + roomName + "에 대한 세션 삭제!");
 
-                    dailyCoService.delete(request.getRoomName());
+                    dailyCoService.delete(request.getRoomUUID());
 
                     return response;
                 } catch (Exception e) {
