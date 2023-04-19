@@ -80,8 +80,10 @@ public class SessionServiceImpl implements SessionService {
             // 2. 삽입한 데이터 클라이언트에 전달
             SessionRedisSaveResponse response = SessionRedisSaveResponse.builder()
                     .code(HttpStatus.OK.toString())
-                    .msg("정상적으로 처리하였습니다.")
-                    .data(redisTemplate.opsForSet().members(roomName).toString()).build();
+                    .msg(roomUrl+"경로로 "+roomName+"에 "+userName+"가 들어왔습니다")
+                    .room(roomName)
+                    .name(userName)
+                    .url(roomUrl).build();
             log.info("Redis 세션 저장! " + roomName + "에 " + userName + "저장!");
             return response;
         } catch (Exception e) {
