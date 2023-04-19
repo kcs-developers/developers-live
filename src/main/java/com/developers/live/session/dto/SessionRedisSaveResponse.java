@@ -13,5 +13,7 @@ import lombok.NoArgsConstructor;
 public class SessionRedisSaveResponse {
     private String code;
     private String msg;
-    private String data;
+    private String room;
+    private String name;
+    private String url;
 }
