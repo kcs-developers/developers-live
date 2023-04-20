@@ -4,6 +4,7 @@ import com.developers.live.exception.DailyCoException;
 import com.developers.live.session.dto.dailyco.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,6 +17,10 @@ import java.util.Map;
 @Log4j2
 @AllArgsConstructor
 public class DailyCoServiceImpl implements DailyCoService{
+
+    @Value("${com.developers.daily.secret}")
+    private String apiKey;
+
     @Override
     public String create(Long nbf, Long exp) {
         try {
@@ -30,7 +35,7 @@ public class DailyCoServiceImpl implements DailyCoService{
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
-            headers.set("Authorization", "Bearer 17885ccd0a16f1c5e4d642075773a775fc45b46b020cfac4023c3fb88f7aba01");
+            headers.set("Authorization", "Bearer "+apiKey);
             HttpEntity<Map> entity = new HttpEntity<>(body, headers);
 
             ResponseEntity<DailyCoAnswer> responseEntity = restTemplate.postForEntity(createRoomUrl, entity, DailyCoAnswer.class);
