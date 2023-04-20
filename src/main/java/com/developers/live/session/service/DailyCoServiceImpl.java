@@ -3,6 +3,7 @@ package com.developers.live.session.service;
 import com.developers.live.exception.DailyCoException;
 import com.developers.live.session.dto.dailyco.*;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -14,7 +15,6 @@ import java.util.Map;
 
 @Service
 @Log4j2
-@AllArgsConstructor
 public class DailyCoServiceImpl implements DailyCoService{
 
     @Value("${com.developers.daily.secret}")
