@@ -46,13 +46,7 @@ public class SessionServiceImpl implements SessionService {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
                 roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
                 if (roomUrl == null) {
-                    LocalDateTime start = schedule.get().getStart();
-                    LocalDateTime end = schedule.get().getEnd();
-
-                    long nbf = start.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-                    long exp = end.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-
-                    roomUrl = dailyCoService.create(nbf, exp);
+                    roomUrl = dailyCoService.create();
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
                 roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
