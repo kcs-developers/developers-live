@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.ResponseEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +14,5 @@ public class DailyCoResponse {
     private String code;
     private String msg;
     private DailyCoAnswer data;
+    private ResponseEntity<String> delete;
 }
