@@ -55,16 +55,16 @@ public class DailyCoServiceImpl implements DailyCoService{
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
             headers.set("Authorization", "Bearer "+apiKey);
-
-            HttpEntity<String> entity = new HttpEntity<>(headers);
+            HttpEntity<Map> entity = new HttpEntity<>(headers);
 
             try {
-                restTemplate.delete(deleteRoomUrl, entity);
+                ResponseEntity<String> result = restTemplate.exchange(deleteRoomUrl, HttpMethod.DELETE,entity, String.class);
                 log.info("방 삭제 성공! " + roomName);
                 DailyCoResponse response = DailyCoResponse.builder()
                         .code(HttpStatus.OK.toString())
                         .msg("방이 성공적으로 삭제되었습니다!")
                         .data(null)
+                        .delete(result)
                         .build();
 
                 return response;
