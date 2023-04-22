@@ -31,11 +31,15 @@ public class RedisConfig {
 
   @Bean
   public RedisConnectionFactory cacheRedisConnectionFactory() {
-    RedisClusterConfiguration config = new RedisClusterConfiguration(); config. setMaxRedirects(3);
-    config.setClusterNodes(List.of(
-            new RedisNode(host, port)
-  ));
-    return new LettuceConnectionFactory(config);
+    RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(host, port);
+
+    final SocketOptions socketoptions = SocketOptions.builder().connectTimeout(Duration.ofSeconds(10)).build();
+    final ClientOptions clientoptions = ClientOptions.builder().socketOptions(socketoptions).build();
+
+    LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().clientOptions(clientoptions)
+            .commandTimeout(Duration.ofSeconds(10)).shutdownTimeout(Duration.ZERO)
+            .build();
+    return new LettuceConnectionFactory(configuration, lettuceClientConfiguration);
   }
 
   @Bean(name = "redisTemplate")
