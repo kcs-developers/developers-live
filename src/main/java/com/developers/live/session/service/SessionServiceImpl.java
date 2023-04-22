@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.MethodNotAllowedException;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -34,8 +36,8 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionRedisSaveResponse enter(SessionRedisSaveRequest request) {
-        String roomName = request.getRoomName();
-        String userName = request.getUserName();
+        String roomNameDecoded = URLDecoder.decode(request.getRoomName(), StandardCharsets.UTF_8);
+        String useNameDecoded = URLDecoder.decode(request.getUserName(), StandardCharsets.UTF_8);
         Long expireTime = request.getTime();
         String roomUrl;
 
@@ -43,24 +45,25 @@ public class SessionServiceImpl implements SessionService {
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
-                log.info(stringRedisTemplate.opsForHash().get("rooms", roomName));
-                roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
+                log.info(stringRedisTemplate.opsForHash().get("rooms", roomNameDecoded));
+                roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomNameDecoded));
                 log.info("멘토");
-                log.info(roomName+roomUrl);
+                log.info(roomNameDecoded+roomUrl);
                 if (roomUrl.equals("null")) {
                     log.info("데일리코 방을 생성하겠습니다");
                     try {
                         roomUrl = dailyCoService.create();
+                        stringRedisTemplate.opsForHash().put("rooms", roomNameDecoded, roomUrl);
                     }catch(Exception e){
                         log.error("방 생성 실패");
                         throw new InvalidDataAccessApiUsageException("방 생성 오류 발생", e);
                     }
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
-                roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
-                log.info(stringRedisTemplate.opsForHash().get("rooms", roomName));
+                roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomNameDecoded));
+                log.info(stringRedisTemplate.opsForHash().get("rooms", roomNameDecoded));
                 log.info("멘티");
-                log.info(roomName+roomUrl);
+                log.info(roomNameDecoded+roomUrl);
                 if (roomUrl.equals("null")) {
                     log.error("멘토가 방을 아직 생성하지 않았습니다!");
                     throw new InvalidDataAccessApiUsageException("멘토가 방을 아직 생성하지 않았습니다!");
@@ -70,7 +73,7 @@ public class SessionServiceImpl implements SessionService {
                 throw new InvalidDataAccessApiUsageException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
             }
 
-            return getSessionRedisSaveResponse(roomName, userName, roomUrl, expireTime);
+            return getSessionRedisSaveResponse(roomNameDecoded, useNameDecoded, roomUrl, expireTime);
         } else {
             log.error("스케쥴 정보 오류!");
             throw new InvalidDataAccessApiUsageException("해당 일정은 존재하지 않습니다!");
@@ -148,26 +151,26 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionRedisRemoveResponse remove(SessionRedisRemoveRequest request) {
-        String roomName = request.getRoomName();
+        String roomNameDecoded = URLDecoder.decode(request.getRoomName(), StandardCharsets.UTF_8);
 
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
                 try {
-                    if (!stringRedisTemplate.opsForHash().hasKey("rooms", roomName)) {
-                        log.error("Redis 세션 삭제 오류! ", roomName);
+                    if (!stringRedisTemplate.opsForHash().hasKey("rooms", roomNameDecoded)) {
+                        log.error("Redis 세션 삭제 오류! ", roomNameDecoded);
                         throw new IllegalArgumentException("Redis에서 해당 세션은 존재하지 않습니다. ");
                     }
                     // 1. Redis에 request.getRoomId()를 가지고 가서 해당하는 데이터 삭제
-                    stringRedisTemplate.opsForHash().delete("rooms", roomName);
+                    stringRedisTemplate.opsForHash().delete("rooms", roomNameDecoded);
 
                     // 2. 삭제한 데이터
                     SessionRedisRemoveResponse response = SessionRedisRemoveResponse.builder()
                             .code(HttpStatus.OK.toString())
                             .msg("정상적으로 처리되었습니다.")
-                            .data(String.valueOf(stringRedisTemplate.delete(roomName)))
+                            .data(String.valueOf(stringRedisTemplate.delete(roomNameDecoded)))
                             .build();
-                    log.info("Redis 세션 삭제 완료! " + roomName + "에 대한 세션 삭제!");
+                    log.info("Redis 세션 삭제 완료! " + roomNameDecoded + "에 대한 세션 삭제!");
 
                     dailyCoService.delete(request.getRoomUUID());
 
