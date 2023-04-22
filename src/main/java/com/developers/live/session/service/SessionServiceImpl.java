@@ -29,7 +29,6 @@ import java.util.Set;
 public class SessionServiceImpl implements SessionService {
 
     private final StringRedisTemplate stringRedisTemplate; // 정확하게 문자열로 저장
-    private final RedisTemplate<String, Object> redisTemplate; // 실제 서비스 redisTemplate
     private final ScheduleRepository scheduleRepository; // 스케쥴에 해당하는 사용자 확인
     private final DailyCoServiceImpl dailyCoService; //dailyco 서버에서 요청 처리
 
@@ -44,13 +43,14 @@ public class SessionServiceImpl implements SessionService {
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
-                roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
+                log.info(stringRedisTemplate.opsForHash().get("rooms", roomName));
+                roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
                 log.info(roomName+roomUrl);
                 if (roomUrl == null) {
                     roomUrl = dailyCoService.create();
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
-                roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
+                roomUrl = (String) stringRedisTemplate.opsForHash().get("rooms", roomName);
                 log.info(roomName+roomUrl);
                 if (roomUrl == null) {
                     log.error("멘토가 방을 아직 생성하지 않았습니다!");
@@ -156,7 +156,7 @@ public class SessionServiceImpl implements SessionService {
                     SessionRedisRemoveResponse response = SessionRedisRemoveResponse.builder()
                             .code(HttpStatus.OK.toString())
                             .msg("정상적으로 처리되었습니다.")
-                            .data(String.valueOf(redisTemplate.delete(roomName)))
+                            .data(String.valueOf(stringRedisTemplate.delete(roomName)))
                             .build();
                     log.info("Redis 세션 삭제 완료! " + roomName + "에 대한 세션 삭제!");
 
