@@ -45,12 +45,14 @@ public class SessionServiceImpl implements SessionService {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
                 log.info(stringRedisTemplate.opsForHash().get("rooms", roomName));
                 roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
+                log.info("멘토");
                 log.info(roomName+roomUrl);
                 if (roomUrl == null) {
                     roomUrl = dailyCoService.create();
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
                 roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
+                log.info("멘티");
                 log.info(roomName+roomUrl);
                 if (roomUrl == null) {
                     log.error("멘토가 방을 아직 생성하지 않았습니다!");
@@ -82,7 +84,7 @@ public class SessionServiceImpl implements SessionService {
                     .room(roomName)
                     .name(userName)
                     .url(roomUrl).build();
-            log.info("Redis 세션 저장! " + roomName + "에 " + userName + "저장!");
+            log.info("Redis 세션 저장! " + roomName + "("+roomUrl+"에 " + userName +"입장!");
             return response;
         } catch (Exception e) {
             log.error("Redis 세션 저장 오류! 방 정보: " + roomName + " 사용자 정보: " + userName, e);
