@@ -47,7 +47,7 @@ public class SessionServiceImpl implements SessionService {
                 roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
                 log.info("멘토");
                 log.info(roomName+roomUrl);
-                if (roomUrl == null) {
+                if (roomUrl.equals("null")) {
                     log.info("데일리코 방을 생성하겠습니다");
                     try {
                         roomUrl = dailyCoService.create();
@@ -60,7 +60,7 @@ public class SessionServiceImpl implements SessionService {
                 roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
                 log.info("멘티");
                 log.info(roomName+roomUrl);
-                if (roomUrl == null) {
+                if (roomUrl.equals("null")) {
                     log.error("멘토가 방을 아직 생성하지 않았습니다!");
                     throw new InvalidDataAccessApiUsageException("멘토가 방을 아직 생성하지 않았습니다!");
                 }
@@ -117,7 +117,7 @@ public class SessionServiceImpl implements SessionService {
 
 
 
-            if (rooms.equals(null) || rooms.isEmpty()) {
+            if (rooms.equals("null") || rooms.isEmpty()) {
                 log.error("Redis 세션 전체 출력 오류! ");
                 throw new InvalidDataAccessApiUsageException("현재 Redis 세션이 없습니다. ");
             }
