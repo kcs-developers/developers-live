@@ -111,7 +111,7 @@ public class SessionServiceImpl implements SessionService {
 
 
 
-            if (rooms == null || rooms.isEmpty()) {
+            if (rooms.equals(null) || rooms.isEmpty()) {
                 log.error("Redis 세션 전체 출력 오류! ");
                 throw new InvalidDataAccessApiUsageException("현재 Redis 세션이 없습니다. ");
             }
