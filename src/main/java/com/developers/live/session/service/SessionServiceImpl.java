@@ -43,10 +43,7 @@ public class SessionServiceImpl implements SessionService {
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
-                log.info(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
                 roomUrl = String.valueOf(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
-                log.info("멘토");
-                log.info(request.getRoomName()+roomUrl);
                 if (roomUrl.equals("null")) {
                     log.info("데일리코 방을 생성하겠습니다");
                     try {
@@ -58,9 +55,6 @@ public class SessionServiceImpl implements SessionService {
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
                 roomUrl = String.valueOf(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
-                log.info(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
-                log.info("멘티");
-                log.info(request.getRoomName()+roomUrl);
                 if (roomUrl.equals("null") || roomUrl==null) {
                     log.error("멘토가 방을 아직 생성하지 않았습니다!");
                     throw new InvalidDataAccessApiUsageException("멘토가 방을 아직 생성하지 않았습니다!");
@@ -81,8 +75,10 @@ public class SessionServiceImpl implements SessionService {
         try {
             // 1. Redis 데이터 삽입 로직 수행
             redisTemplate.opsForSet().add(roomName, userName);
+            log.info(redisTemplate.opsForSet().members(roomName));
             redisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
             redisTemplate.opsForHash().put("rooms", roomName, roomUrl);
+            log.info(redisTemplate.opsForHash().get("rooms", roomName));
 
             // 2. 삽입한 데이터 클라이언트에 전달
             SessionRedisSaveResponse response = SessionRedisSaveResponse.builder()
@@ -104,6 +100,8 @@ public class SessionServiceImpl implements SessionService {
         try {
             // 1. Redis에서 모든 채팅방 정보를 가져온다.
             Set<Object> rooms = redisTemplate.opsForHash().keys("rooms");
+            log.info("rooms에 연결된 hash 값");
+            log.info(rooms);
             Map<Object, Object> roomUrl = new HashMap();
             Map<String, Set<String>> roomUsers = new HashMap<>();
 
@@ -111,6 +109,8 @@ public class SessionServiceImpl implements SessionService {
                 String roomName = room.toString();
                 String url = redisTemplate.opsForHash().get("rooms", roomName).toString();
                 Set<String> users = redisTemplate.opsForSet().members(roomName);
+                log.info(roomName+"에 연결된 "+redisTemplate.opsForSet().members(roomName));
+                log.info("방 경로는..."+url);
 
                 roomUrl.put(roomName, url);
                 roomUsers.put(roomName, users);
