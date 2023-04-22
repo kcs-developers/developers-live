@@ -58,6 +58,7 @@ public class SessionServiceImpl implements SessionService {
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
                 roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
+                log.info(stringRedisTemplate.opsForHash().get("rooms", roomName));
                 log.info("멘티");
                 log.info(roomName+roomUrl);
                 if (roomUrl.equals("null")) {
