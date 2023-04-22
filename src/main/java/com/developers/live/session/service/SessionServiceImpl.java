@@ -45,11 +45,13 @@ public class SessionServiceImpl implements SessionService {
         if (schedule.isPresent()) {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
                 roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
+                log.info(roomName+roomUrl);
                 if (roomUrl == null) {
                     roomUrl = dailyCoService.create();
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
                 roomUrl = (String) redisTemplate.opsForHash().get("rooms", roomName);
+                log.info(roomName+roomUrl);
                 if (roomUrl == null) {
                     log.error("멘토가 방을 아직 생성하지 않았습니다!");
                     throw new InvalidDataAccessApiUsageException("멘토가 방을 아직 생성하지 않았습니다!");
