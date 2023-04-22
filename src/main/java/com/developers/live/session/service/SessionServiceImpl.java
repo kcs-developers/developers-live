@@ -48,7 +48,13 @@ public class SessionServiceImpl implements SessionService {
                 log.info("멘토");
                 log.info(roomName+roomUrl);
                 if (roomUrl == null) {
-                    roomUrl = dailyCoService.create();
+                    log.info("데일리코 방을 생성하겠습니다");
+                    try {
+                        roomUrl = dailyCoService.create();
+                    }catch(Exception e){
+                        log.error("방 생성 실패");
+                        throw new InvalidDataAccessApiUsageException("방 생성 오류 발생", e);
+                    }
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
                 roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", roomName));
