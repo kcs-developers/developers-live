@@ -30,22 +30,23 @@ public class RedisConfig {
   public int port;
 
   @Bean
-  public RedisConnectionFactory cacheRedisConnectionFactory() {
-    RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(host, port);
-
+  public LettuceConnectionFactory lettuceConnectionFactory() {
     final SocketOptions socketoptions = SocketOptions.builder().connectTimeout(Duration.ofSeconds(10)).build();
     final ClientOptions clientoptions = ClientOptions.builder().socketOptions(socketoptions).build();
 
     LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder().clientOptions(clientoptions)
-            .commandTimeout(Duration.ofSeconds(10)).shutdownTimeout(Duration.ZERO)
+            .commandTimeout(Duration.ofMinutes(1))
+            .shutdownTimeout(Duration.ZERO)
             .build();
-    return new LettuceConnectionFactory(configuration, lettuceClientConfiguration);
+    RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
+    redisStandaloneConfiguration.setDatabase(0);
+    return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
   }
 
   @Bean(name = "redisTemplate")
   public RedisTemplate<String, Object> redisTemplate() {
     RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-    redisTemplate.setConnectionFactory(cacheRedisConnectionFactory());
+    redisTemplate.setConnectionFactory(lettuceConnectionFactory());
     redisTemplate.setKeySerializer(new StringRedisSerializer());
     redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
     redisTemplate.setHashKeySerializer(new StringRedisSerializer());

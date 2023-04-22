@@ -31,7 +31,7 @@ import java.util.Set;
 @Log4j2
 public class SessionServiceImpl implements SessionService {
 
-    private final StringRedisTemplate stringRedisTemplate; // 정확하게 문자열로 저장
+    private final RedisTemplate redisTemplate; // 정확하게 문자열로 저장
     private final ScheduleRepository scheduleRepository; // 스케쥴에 해당하는 사용자 확인
     private final DailyCoServiceImpl dailyCoService; //dailyco 서버에서 요청 처리
 
@@ -43,8 +43,8 @@ public class SessionServiceImpl implements SessionService {
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
-                log.info(stringRedisTemplate.opsForHash().get("rooms", request.getRoomName()));
-                roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", request.getRoomName()));
+                log.info(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
+                roomUrl = String.valueOf(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
                 log.info("멘토");
                 log.info(request.getRoomName()+roomUrl);
                 if (roomUrl.equals("null")) {
@@ -57,8 +57,8 @@ public class SessionServiceImpl implements SessionService {
                     }
                 }
             } else if (schedule.get().getMenteeId().equals(request.getUserId())) {
-                roomUrl = String.valueOf(stringRedisTemplate.opsForHash().get("rooms", request.getRoomName()));
-                log.info(stringRedisTemplate.opsForHash().get("rooms", request.getRoomName()));
+                roomUrl = String.valueOf(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
+                log.info(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
                 log.info("멘티");
                 log.info(request.getRoomName()+roomUrl);
                 if (roomUrl.equals("null") || roomUrl==null) {
@@ -80,9 +80,9 @@ public class SessionServiceImpl implements SessionService {
     private SessionRedisSaveResponse getSessionRedisSaveResponse(String roomName, String userName, String roomUrl, Long expireTime) {
         try {
             // 1. Redis 데이터 삽입 로직 수행
-            stringRedisTemplate.opsForSet().add(roomName, userName);
-            stringRedisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
-            stringRedisTemplate.opsForHash().put("rooms", roomName, roomUrl);
+            redisTemplate.opsForSet().add(roomName, userName);
+            redisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
+            redisTemplate.opsForHash().put("rooms", roomName, roomUrl);
 
             // 2. 삽입한 데이터 클라이언트에 전달
             SessionRedisSaveResponse response = SessionRedisSaveResponse.builder()
@@ -103,14 +103,14 @@ public class SessionServiceImpl implements SessionService {
     public SessionRedisFindAllResponse list() {
         try {
             // 1. Redis에서 모든 채팅방 정보를 가져온다.
-            Set<Object> rooms = stringRedisTemplate.opsForHash().keys("rooms");
+            Set<Object> rooms = redisTemplate.opsForHash().keys("rooms");
             Map<Object, Object> roomUrl = new HashMap();
             Map<String, Set<String>> roomUsers = new HashMap<>();
 
             for (Object room : rooms) {
                 String roomName = room.toString();
-                String url = stringRedisTemplate.opsForHash().get("rooms", roomName).toString();
-                Set<String> users = stringRedisTemplate.opsForSet().members(roomName);
+                String url = redisTemplate.opsForHash().get("rooms", roomName).toString();
+                Set<String> users = redisTemplate.opsForSet().members(roomName);
 
                 roomUrl.put(roomName, url);
                 roomUsers.put(roomName, users);
@@ -152,18 +152,18 @@ public class SessionServiceImpl implements SessionService {
         if (schedule.isPresent()) {
             if (schedule.get().getMentorId().equals(request.getUserId())) {
                 try {
-                    if (!stringRedisTemplate.opsForHash().hasKey("rooms", request.getRoomName())) {
+                    if (!redisTemplate.opsForHash().hasKey("rooms", request.getRoomName())) {
                         log.error("Redis 세션 삭제 오류! ", request.getRoomName());
                         throw new IllegalArgumentException("Redis에서 해당 세션은 존재하지 않습니다. ");
                     }
                     // 1. Redis에 request.getRoomId()를 가지고 가서 해당하는 데이터 삭제
-                    stringRedisTemplate.opsForHash().delete("rooms", request.getRoomName());
+                    redisTemplate.opsForHash().delete("rooms", request.getRoomName());
 
                     // 2. 삭제한 데이터
                     SessionRedisRemoveResponse response = SessionRedisRemoveResponse.builder()
                             .code(HttpStatus.OK.toString())
                             .msg("정상적으로 처리되었습니다.")
-                            .data(String.valueOf(stringRedisTemplate.delete(request.getRoomName())))
+                            .data(String.valueOf(redisTemplate.delete(request.getRoomName())))
                             .build();
                     log.info("Redis 세션 삭제 완료! " + request.getRoomName() + "에 대한 세션 삭제!");
 
