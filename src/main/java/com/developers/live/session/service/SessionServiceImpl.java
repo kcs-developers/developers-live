@@ -42,12 +42,17 @@ public class SessionServiceImpl implements SessionService {
         // 스케쥴 기반으로, 스케쥴에 해당 mentee가 등록된 사용자인지 여부 체크
         Optional<Schedule> schedule = scheduleRepository.findById(request.getScheduleId());
         if (schedule.isPresent()) {
+            Set<Object> currentMembers = redisTemplate.opsForSet().members(request.getRoomName());
             if (schedule.get().getMentorId().equals(request.getUserId())) {
+                if (currentMembers != null && currentMembers.size() >= 2) {
+                    log.info("멘토와 멘티가 이미 참여하고 있습니다.");
+                    throw new RedisException("추가 사용자 참여 불가");
+                }
                 roomUrl = String.valueOf(redisTemplate.opsForHash().get("rooms", request.getRoomName()));
                 if (roomUrl.equals("null")) {
                     log.info("데일리코 방을 생성하겠습니다");
                     try {
-                        roomUrl = dailyCoService.create();
+                        roomUrl = dailyCoService.create(request.getNbf(), request.getExp());
                     }catch(Exception e){
                         log.error("방 생성 실패");
                         throw new InvalidDataAccessApiUsageException("방 생성 오류 발생", e);
@@ -64,20 +69,22 @@ public class SessionServiceImpl implements SessionService {
                 throw new InvalidDataAccessApiUsageException(request.getUserName() + " 사용자는 해당 방에 입장할 수 없습니다");
             }
 
-            return getSessionRedisSaveResponse(request.getRoomName(), request.getUserName(), roomUrl, request.getTime());
+            return getSessionRedisSaveResponse(request.getRoomName(), request.getUserName(), roomUrl);
         } else {
             log.error("스케쥴 정보 오류!");
             throw new InvalidDataAccessApiUsageException("해당 일정은 존재하지 않습니다!");
         }
     }
 
-    private SessionRedisSaveResponse getSessionRedisSaveResponse(String roomName, String userName, String roomUrl, Long expireTime) {
+    private SessionRedisSaveResponse getSessionRedisSaveResponse(String roomName, String userName, String roomUrl) {
         try {
-            // 1. Redis 데이터 삽입 로직 수행
+            // 1. 방과 사용자
             redisTemplate.opsForSet().add(roomName, userName);
+            redisTemplate.expire(roomName, Duration.ofMinutes(60));
             log.info(redisTemplate.opsForSet().members(roomName));
-            redisTemplate.expire(roomName, Duration.ofMinutes(expireTime));
-            redisTemplate.opsForHash().put("rooms", roomName, roomUrl);
+            // 방과 url
+            redisTemplate.opsForHash().putIfAbsent("rooms", roomName, roomUrl);
+            redisTemplate.expire("rooms", Duration.ofMinutes(60));
             log.info(redisTemplate.opsForHash().get("rooms", roomName));
 
             // 2. 삽입한 데이터 클라이언트에 전달
@@ -158,6 +165,7 @@ public class SessionServiceImpl implements SessionService {
                     }
                     // 1. Redis에 request.getRoomId()를 가지고 가서 해당하는 데이터 삭제
                     redisTemplate.opsForHash().delete("rooms", request.getRoomName());
+                    redisTemplate.delete(request.getRoomName()); // set 데이터 삭제 추가
 
                     // 2. 삭제한 데이터
                     SessionRedisRemoveResponse response = SessionRedisRemoveResponse.builder()

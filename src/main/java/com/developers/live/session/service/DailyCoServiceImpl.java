@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -21,7 +22,7 @@ public class DailyCoServiceImpl implements DailyCoService{
     private String apiKey;
 
     @Override
-    public String create() {
+    public String create(Long nbf, Long exp) {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String createRoomUrl = "https://api.daily.co/v1/rooms";
@@ -29,7 +30,15 @@ public class DailyCoServiceImpl implements DailyCoService{
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
             headers.set("Authorization", "Bearer "+apiKey);
-            HttpEntity<Map> entity = new HttpEntity<>(headers);
+
+            // properties 속성 추가
+            Map<String, Object> body = new HashMap<>();
+            body.put("nbf", nbf);
+            body.put("exp", exp);
+            Map<String, Object> properties = new HashMap<>();
+            properties.put("properties", body);
+
+            HttpEntity<Map> entity = new HttpEntity<>(properties, headers);
 
             ResponseEntity<DailyCoAnswer> responseEntity = restTemplate.postForEntity(createRoomUrl, entity, DailyCoAnswer.class);
 
