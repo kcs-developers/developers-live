@@ -70,7 +70,7 @@ public class RoomControllerTest {
             .msg("첫번째 캐시 저장소에 저장된 데이터")
             .data(roomList)
             .build();
-    given(roomService.getFirstCacheList()).willReturn(response);
+    given(roomService.getFirstList()).willReturn(response);
 
     // when
     mockMvc.perform(get(BASE_URL))
@@ -82,7 +82,7 @@ public class RoomControllerTest {
             .andExpect(content().json(objectMapper.writeValueAsString(response)));
 
     // then
-    verify(roomService, times(1)).getFirstCacheList();
+    verify(roomService, times(1)).getFirstList();
   }
 
   @Test
