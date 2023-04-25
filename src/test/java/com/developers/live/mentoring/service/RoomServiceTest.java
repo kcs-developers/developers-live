@@ -128,7 +128,7 @@ public class RoomServiceTest {
     when(cachingRoomService.getAndUpdateFirstCacheStorage()).thenReturn(dtoList);
 
     // when
-    RoomListResponseDto response = roomService.getFirstCacheList();
+    RoomListResponseDto response = roomService.getFirstList();
 
     // then
     assertThat(response.getCode()).isEqualTo(HttpStatus.OK.toString());
