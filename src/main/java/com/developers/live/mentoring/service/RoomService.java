@@ -7,8 +7,7 @@ import java.time.LocalDateTime;
 
 public interface RoomService {
 
-  void syncWithData();
-  RoomListResponseDto getFirstCacheList();
+  RoomListResponseDto getFirstList();
   RoomListResponseDto getNextList(LocalDateTime lastDateTime);
   RoomAddResponseDto addRoom(RoomAddRequestDto req);
   RoomUpdateResponseDto updateRoom(RoomUpdateRequestDto req);
