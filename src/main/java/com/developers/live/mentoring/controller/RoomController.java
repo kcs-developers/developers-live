@@ -24,7 +24,7 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<RoomListResponseDto> getFirstList() {
-        RoomListResponseDto response = roomService.getFirstCacheList();
+        RoomListResponseDto response = roomService.getFirstList();
         log.info("첫번째 저장소에 저장된 데이터");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

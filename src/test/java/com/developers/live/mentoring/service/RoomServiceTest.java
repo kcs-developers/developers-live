@@ -5,8 +5,6 @@ import com.developers.live.mentoring.entity.Room;
 import com.developers.live.mentoring.entity.Schedule;
 import com.developers.live.mentoring.repository.RoomRepository;
 import com.developers.live.mentoring.repository.ScheduleRepository;
-import com.developers.live.mentoring.service.CachingRoomService;
-import com.developers.live.mentoring.service.RoomServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,8 +25,6 @@ import static org.mockito.Mockito.when;
 public class RoomServiceTest {
 
   @Mock ScheduleRepository scheduleRepository;
-
-  @Mock CachingRoomService cachingRoomService;
 
   @Mock RoomRepository roomRepository;
 

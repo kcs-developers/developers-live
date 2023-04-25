@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,22 +23,16 @@ public class RoomServiceImpl implements RoomService {
 
   private final RoomRepository roomRepository;
   private final ScheduleRepository scheduleRepository;
-  private final CachingRoomService cachingRoomService;
-
-  // 밑에서 지정해줬듯이 120000ms(2분)마다 한번씩 scheduler 가 실행되어 첫번째 100개의 데이터를 DB와 맞춘다.
-  @Override
-  @Scheduled(fixedDelay = 120000)
-  public void syncWithData() {
-    cachingRoomService.removeFirstMentoringRoomList();
-    cachingRoomService.getAndUpdateFirstCacheStorage();
-  }
 
   @Override
-  public RoomListResponseDto getFirstCacheList() {
+  public RoomListResponseDto getFirstList() {
+    List<Room> roomList = roomRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, 100));
+    List<RoomGetDto> result = roomList.stream().map(room -> entityToDto(room)).toList();
+
     return RoomListResponseDto.builder()
             .code(HttpStatus.OK.toString())
             .msg("첫번째 캐시 저장소에 저장된 데이터")
-            .data(cachingRoomService.getAndUpdateFirstCacheStorage())
+            .data(result)
             .build();
   }
 
