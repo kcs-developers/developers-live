@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-  List<Room> findByTitleContaining(String param);
+  List<Room> findByTitleContainingOrderByCreatedAtDesc(String param);
   List<Room> findAllByOrderByCreatedAtDesc(Pageable pageable);
   List<Room> findAllByCreatedAtBeforeOrderByCreatedAtDesc(LocalDateTime lastDateTime, Pageable pageable);
-  List<Room> findAllByMentorId(Long mentorId);
+  List<Room> findAllByMentorIdOrderByCreatedAtDesc(Long mentorId);
   List<Room> findTop10ByOrderByCreatedAt();
 }

@@ -57,7 +57,7 @@ public class RoomServiceImpl implements RoomService {
 
   @Override
   public RoomAddResponseDto addRoom(RoomAddRequestDto req) {
-    if (roomRepository.findAllByMentorId(req.getMentorId()).size() >= 20) {
+    if (roomRepository.findAllByMentorIdOrderByCreatedAtDesc(req.getMentorId()).size() >= 20) {
       return RoomAddResponseDto.builder()
               .code(HttpStatus.BAD_REQUEST.toString())
               .msg("방은 최대 20개까지만 생성할 수 있습니다.")
@@ -138,7 +138,7 @@ public class RoomServiceImpl implements RoomService {
   // 입력받은 검색어의 1개 이상 공백을 감지해 공백 1개로 치환한 후 방 검색 결과 리스트를 반환한다.
   @Override
   public RoomListResponseDto getRoomWithSearchingWord(String searchingWord) {
-    List<Room> roomList = roomRepository.findByTitleContaining(searchingWord.replaceAll("\\s+", " "));
+    List<Room> roomList = roomRepository.findByTitleContainingOrderByCreatedAtDesc(searchingWord.replaceAll("\\s+", " "));
     List<RoomGetDto> dtoList = roomList.stream().map(room -> entityToDto(room)).toList();
 
     return RoomListResponseDto.builder()
@@ -150,7 +150,7 @@ public class RoomServiceImpl implements RoomService {
 
   @Override
   public RoomListResponseDto getRoomWithMentorId(Long mentorId) {
-    List<Room> roomList = roomRepository.findAllByMentorId(mentorId);
+    List<Room> roomList = roomRepository.findAllByMentorIdOrderByCreatedAtDesc(mentorId);
     List<RoomGetDto> dtoList = roomList.stream().map(room -> entityToDto(room)).toList();
 
     return RoomListResponseDto.builder()
