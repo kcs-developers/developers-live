@@ -57,7 +57,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/{searchingWord}")
+    @GetMapping("/{searchingWord:.+}")
     public ResponseEntity<RoomListResponseDto> roomListWithSearchingWord(@PathVariable("searchingWord") String searchingWord) {
         RoomListResponseDto response = roomService.getRoomWithSearchingWord(searchingWord);
         log.info("검색어 이용해 방 목록 조회: " + response);
