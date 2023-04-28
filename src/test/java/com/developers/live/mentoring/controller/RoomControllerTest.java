@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,12 +30,14 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = RoomController.class)
+@WithMockUser("USER")
 public class RoomControllerTest {
   // 내가 생성한 메서드에 관해서만 @MockBean 사용
   @Autowired ObjectMapper objectMapper;
@@ -73,7 +76,7 @@ public class RoomControllerTest {
     given(roomService.getFirstList()).willReturn(response);
 
     // when
-    mockMvc.perform(get(BASE_URL))
+    mockMvc.perform(get(BASE_URL).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("room/list",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
@@ -110,6 +113,7 @@ public class RoomControllerTest {
 
     // when
     mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
+                    .with(csrf())
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(MockMvcResultHandlers.print())
@@ -153,7 +157,7 @@ public class RoomControllerTest {
     given(roomService.getNextList(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/next")
+    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/next").with(csrf())
             .queryParam("lastDateTime", String.valueOf(lastDateTime)))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("room/list-next",
@@ -188,6 +192,7 @@ public class RoomControllerTest {
             .build();
     // when
     mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/update")
+                    .with(csrf())
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(MockMvcResultHandlers.print())
@@ -214,7 +219,7 @@ public class RoomControllerTest {
     given(roomService.deleteRoom(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + String.valueOf(mentoringRoomId )))
+    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + String.valueOf(mentoringRoomId )).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("room/delete",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
@@ -255,7 +260,7 @@ public class RoomControllerTest {
     given(roomService.getRoomWithMentorId(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/mentor/" + String.valueOf(mentorId)))
+    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/mentor/" + String.valueOf(mentorId)).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("room/get-mentorId",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
@@ -295,7 +300,7 @@ public class RoomControllerTest {
     given(roomService.getRoomTop10()).willReturn(response);
 
     // when
-    mockMvc.perform(get(BASE_URL + "/top"))
+    mockMvc.perform(get(BASE_URL + "/top").with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("room/top-list",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),

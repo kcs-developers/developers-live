@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = ScheduleController.class)
+@WithMockUser("USER")
 public class ScheduleControllerTest {
 
   @Autowired ObjectMapper objectMapper;
@@ -71,6 +74,7 @@ public class ScheduleControllerTest {
 
     // when
     mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
+                    .with(csrf())
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(MockMvcResultHandlers.print())
@@ -98,7 +102,7 @@ public class ScheduleControllerTest {
     given(scheduleService.deleteScheduleAsMentor(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/mentor/" + String.valueOf(scheduleId)))
+    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/mentor/" + String.valueOf(scheduleId)).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("schedule/delete-mentor",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
@@ -124,7 +128,7 @@ public class ScheduleControllerTest {
     given(scheduleService.deleteScheduleAsMentee(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/mentee/" + String.valueOf(scheduleId)))
+    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/mentee/" + String.valueOf(scheduleId)).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("schedule/delete-mentee",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
@@ -172,7 +176,7 @@ public class ScheduleControllerTest {
     given(scheduleService.getScheduleListAsMentor(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/mentor/" + String.valueOf(memberId)))
+    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/mentor/" + String.valueOf(memberId)).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("schedule/get-mentor",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
@@ -220,7 +224,7 @@ public class ScheduleControllerTest {
     given(scheduleService.getScheduleListAsMentee(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/mentee/" + String.valueOf(memberId)))
+    mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/mentee/" + String.valueOf(memberId)).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("schedule/get-mentee",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
@@ -246,7 +250,7 @@ public class ScheduleControllerTest {
     given(scheduleService.endMentoring(any())).willReturn(response);
 
     // when
-    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/end/" + String.valueOf(scheduleId)))
+    mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/end/" + String.valueOf(scheduleId)).with(csrf()))
             .andDo(MockMvcResultHandlers.print())
             .andDo(MockMvcRestDocumentation.document("schedule/end-mentoring",
                     Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
