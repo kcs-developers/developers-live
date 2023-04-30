@@ -155,7 +155,7 @@ public class RoomServiceImpl implements RoomService {
 
   @Override
   public RoomListResponseDto getRoomTop10() {
-    List<Room> roomList = roomRepository.findTop10ByOrderByCreatedAt();
+    List<Room> roomList = roomRepository.findTop10ByOrderByCreatedAtDesc();
     List<RoomGetDto> dtoList = roomList.stream().map(room -> entityToDto(room)).toList();
 
     return RoomListResponseDto.builder()
